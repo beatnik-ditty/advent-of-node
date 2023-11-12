@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "Solvers",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "year": {
+      "type": "number",
+      "description": "The year that the solver package is being generated for"
+    }
+  },
+  "required": ["year"]
+}

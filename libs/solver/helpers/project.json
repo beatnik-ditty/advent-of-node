@@ -1,0 +1,41 @@
+{
+  "name": "solver-helpers",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/solver/helpers/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/solver/helpers",
+        "tsConfig": "libs/solver/helpers/tsconfig.lib.json",
+        "packageJson": "libs/solver/helpers/package.json",
+        "main": "libs/solver/helpers/src/index.ts",
+        "assets": ["libs/solver/helpers/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/solver/helpers/**/*.ts", "libs/solver/helpers/package.json"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/solver/helpers/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": ["scope:solver", "type:controller"]
+}

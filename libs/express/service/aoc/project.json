@@ -1,0 +1,41 @@
+{
+  "name": "service-aoc",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/express/service/aoc/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/express/service/aoc",
+        "tsConfig": "libs/express/service/aoc/tsconfig.lib.json",
+        "packageJson": "libs/express/service/aoc/package.json",
+        "main": "libs/express/service/aoc/src/index.ts",
+        "assets": ["libs/express/service/aoc/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/express/service/aoc/**/*.ts", "libs/express/service/aoc/package.json"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/express/service/aoc/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": ["scope:express", "type:service"]
+}

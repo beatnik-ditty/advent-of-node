@@ -1,0 +1,24 @@
+{
+  "eslint.validate": ["json"],
+  "material-icon-theme.folders.associations": {
+    "express-app": "node",
+    "express-app-e2e": "cypress",
+    "react-app": "react-components",
+    "react-app-e2e": "cypress",
+    "express": "node",
+    "react": "react-components",
+    "data-access": "redux-store",
+    "feature": "redux-selector",
+    "ui": "react-components"
+  },
+  "jestrunner.debugOptions": {
+    "runtimeArgs": ["--preserve-symlinks"]
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "workbench.iconTheme": "material-icon-theme",
+  "workspaceKeybindings.adventOfNode.enabled": true
+}

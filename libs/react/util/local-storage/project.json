@@ -1,0 +1,41 @@
+{
+  "name": "util-local-storage",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/react/util/local-storage/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/react/util/local-storage",
+        "tsConfig": "libs/react/util/local-storage/tsconfig.lib.json",
+        "packageJson": "libs/react/util/local-storage/package.json",
+        "main": "libs/react/util/local-storage/src/index.ts",
+        "assets": ["libs/react/util/local-storage/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/react/util/local-storage/**/*.ts", "libs/react/util/local-storage/package.json"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/react/util/local-storage/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": ["scope:react", "type:util"]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@aon/data-access-store",
+  "version": "0.0.1",
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "@reduxjs/toolkit": "1.9.7",
+    "react-redux": "8.1.3",
+    "@aon/data-access-api": "*",
+    "@aon/data-access-calendar": "*",
+    "@aon/data-access-solver": "*"
+  }
+}

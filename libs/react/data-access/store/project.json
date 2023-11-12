@@ -1,0 +1,41 @@
+{
+  "name": "data-access-store",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/react/data-access/store/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/react/data-access/store",
+        "tsConfig": "libs/react/data-access/store/tsconfig.lib.json",
+        "packageJson": "libs/react/data-access/store/package.json",
+        "main": "libs/react/data-access/store/src/index.ts",
+        "assets": ["libs/react/data-access/store/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/react/data-access/store/**/*.ts", "libs/react/data-access/store/package.json"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/react/data-access/store/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": ["scope:react", "type:data-access"]
+}

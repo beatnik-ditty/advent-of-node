@@ -1,0 +1,6 @@
+export const day_<%= day %>_<%= year %> = (input: string, part: 1 | 2) => {
+  if (part === 2) {
+    return 'Part 2 not implemented';
+  }
+  return 'Part 1 not implemented';
+};

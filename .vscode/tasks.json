@@ -1,0 +1,64 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  /*
+  I recommend adding keybindings like the following.
+  To modify your keybinds, go to File > Preferences > Keyboard Shortcuts, then hit the first icon in the upper right to open your
+  keybindings.json file.
+  {
+    "key": "ctrl+numpad1",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Nx: run react-app serve",
+    "when": "config.workspaceKeybindings.adventOfNode.enabled"
+  },
+  {
+    "key": "ctrl+numpad2",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Nx: run express-app serve",
+    "when": "config.workspaceKeybindings.adventOfNode.enabled"
+  },
+  {
+    "key": "ctrl+numpad3",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Nx: run-many serve",
+    "when": "config.workspaceKeybindings.adventOfNode.enabled"
+  }
+  */ "tasks": [
+    {
+      "label": "Nx: run react-app serve",
+      "type": "shell",
+      "command": "yarn nx run react-app:serve"
+    },
+    {
+      "label": "Nx: run express-app serve",
+      "type": "shell",
+      "command": "yarn nx run express-app:serve"
+    },
+    {
+      "label": "Nx: run-many serve",
+      "type": "shell",
+      "command": "yarn nx run-many --target=serve"
+    },
+    {
+      "label": "Nx: run react-app build",
+      "type": "shell",
+      "command": "yarn nx run react-app:build"
+    },
+    {
+      "label": "Nx: run express-app build",
+      "type": "shell",
+      "command": "yarn nx run express-app:build"
+    },
+    {
+      "label": "Nx: run-many build",
+      "type": "shell",
+      "command": "yarn nx run-many --target=build --projects=express-app,react-app"
+    },
+    {
+      "label": "Nx: run react-app preview",
+      "type": "shell",
+      "command": "yarn nx run react-app:preview:production"
+    }
+  ]
+}

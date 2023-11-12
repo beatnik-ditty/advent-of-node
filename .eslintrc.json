@@ -1,0 +1,123 @@
+{
+  "root": true,
+  "ignorePatterns": ["**/*"],
+  "plugins": ["@nx", "import", "no-autofix"],
+  "overrides": [
+    {
+      "files": "*.json",
+      "parser": "jsonc-eslint-parser",
+      "rules": {}
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "@nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": [],
+            "depConstraints": [
+              {
+                "sourceTag": "scope:shared",
+                "onlyDependOnLibsWithTags": ["scope:shared"]
+              },
+              {
+                "sourceTag": "scope:react",
+                "onlyDependOnLibsWithTags": ["scope:shared", "scope:react"]
+              },
+              {
+                "sourceTag": "scope:express",
+                "onlyDependOnLibsWithTags": ["scope:shared", "scope:express", "scope:solver"]
+              },
+              {
+                "sourceTag": "scope:solver",
+                "onlyDependOnLibsWithTags": ["scope:solver"]
+              },
+              {
+                "sourceTag": "type:*",
+                "notDependOnLibsWithTags": ["type:e2e"]
+              },
+              {
+                "sourceTag": "type:data-access",
+                "onlyDependOnLibsWithTags": ["type:data-access", "type:util"]
+              },
+              {
+                "sourceTag": "type:ui",
+                "onlyDependOnLibsWithTags": ["type:ui", "type:util"]
+              },
+              {
+                "sourceTag": "type:controller",
+                "onlyDependOnLibsWithTags": ["type:service", "type:util", "scope:solver"]
+              },
+              {
+                "sourceTag": "type:service",
+                "onlyDependOnLibsWithTags": ["type:util"]
+              },
+              {
+                "sourceTag": "type:util",
+                "onlyDependOnLibsWithTags": ["type:util"]
+              }
+            ]
+          }
+        ],
+        "import/newline-after-import": ["error"],
+        "import/order": [
+          "error",
+          {
+            "newlines-between": "always",
+            "groups": [
+              ["builtin", "external"],
+              ["internal", "parent", "sibling", "index"]
+            ],
+            "pathGroups": [
+              {
+                "pattern": "@aon/**",
+                "group": "internal",
+                "position": "before"
+              }
+            ],
+            "distinctGroup": false,
+            "pathGroupsExcludedImportTypes": ["builtin"],
+            "alphabetize": {
+              "order": "asc",
+              "caseInsensitive": true
+            }
+          }
+        ],
+        "sort-imports": [
+          "error",
+          {
+            "ignoreDeclarationSort": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nx/typescript"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": ["warn", { "ignoreRestSiblings": true }]
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nx/javascript"],
+      "rules": {}
+    },
+    {
+      "files": ["*.jsx", "*.tsx"],
+      "rules": {
+        "react/jsx-curly-spacing": [
+          "error",
+          {
+            "when": "always",
+            "children": true,
+            "spacing": {
+              "objectLiterals": "never"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

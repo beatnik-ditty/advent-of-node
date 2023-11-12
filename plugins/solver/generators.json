@@ -1,0 +1,9 @@
+{
+  "generators": {
+    "solvers": {
+      "factory": "./generator/generator",
+      "schema": "./generator/schema.json",
+      "description": "Adds stubs for the solver functions for a given year."
+    }
+  }
+}
