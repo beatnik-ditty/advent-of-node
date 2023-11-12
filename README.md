@@ -77,15 +77,10 @@ To build and run the apps, open the Nx Console extension and navigate to `react-
 
 ```
 react-app:preview:production
-```
-
-to host the React app at _http://localhost:4300_ and
-
-```
 express-app:serve:development
 ```
 
-which will serve the Express app at _http://localhost:3333_
+to host the React app at _http://localhost:4300_ and serve the Express app at _http://localhost:3333_
 
 Alternatively, I've set up some build and run tasks in the tasks.json for use in this project. Look there for some guidelines on setting keybindings.
 
