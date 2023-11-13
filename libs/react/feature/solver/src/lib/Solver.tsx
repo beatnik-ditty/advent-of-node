@@ -357,7 +357,7 @@ const InputBody = ({ day }: { day: number }) => {
           </S.Article>
         </S.Content>
       </S.Pane>
-      <InputMenu createSolution={ runSolver } canSolve={ id && !isLoading } />
+      <InputMenu createSolution={ runSolver } canSolve={ id } isRunning={ isLoading } />
     </S.InputBody>
   );
 };
@@ -581,20 +581,52 @@ const Result = ({ part, result, time }: { part: number; result?: string; time?: 
   ) : null;
 };
 
-const InputMenu = ({ canSolve, createSolution }: { canSolve: unknown; createSolution: () => void }) => {
+const InputMenu = ({ canSolve, isRunning, createSolution }: { canSolve: unknown; isRunning: unknown; createSolution: () => void }) => {
   const { part, isCustomInput, hideCustomInput, hidePuzzleInput } = useAppSelector(state => state.solver);
   const dispatch = useAppDispatch();
 
+  const [cancelSolution] = api.useCancelSolutionMutation();
+
+  const [cancel, setCancel] = useState(false);
+  const [cancelDelay, setCancelDelay] = useState<NodeJS.Timeout | undefined>(undefined);
+
+  useEffect(
+    function clearCancel() {
+      if (!isRunning) {
+        clearTimeout(cancelDelay);
+        setCancel(false);
+      }
+    },
+    [cancelDelay, isRunning],
+  );
+
+  const handleRunClick = () => {
+    setCancelDelay(
+      setTimeout(() => {
+        setCancel(true);
+      }, 500),
+    );
+    createSolution();
+  };
+
   return (
     <S.Menu>
-      <S.MenuButton onClick={ () => dispatch(rx.toggleSetting('useCustom')) }>Use { isCustomInput ? 'Puzzle' : 'Custom' } Input</S.MenuButton>
-      <S.MenuButton onClick={ () => dispatch(rx.toggleSetting('hideInput')) }>
+      <S.MenuButton onClick={ () => dispatch(rx.toggleSetting('useCustom')) } disabled={ isRunning }>
+        Use { isCustomInput ? 'Puzzle' : 'Custom' } Input
+      </S.MenuButton>
+      <S.MenuButton onClick={ () => dispatch(rx.toggleSetting('hideInput')) } disabled={ isRunning }>
         { (isCustomInput ? hideCustomInput : hidePuzzleInput) ? 'Show' : 'Hide' } Input
       </S.MenuButton>
-      <S.MenuButton onClick={ () => dispatch(rx.toggleSetting('part')) }>Part { part }</S.MenuButton>
-      <S.MenuButton onClick={ createSolution } disabled={ !canSolve }>
-        Run
+      <S.MenuButton onClick={ () => dispatch(rx.toggleSetting('part')) } disabled={ isRunning }>
+        Part { part }
       </S.MenuButton>
+      { cancel ? (
+        <S.MenuButton onClick={ cancelSolution }>Cancel</S.MenuButton>
+      ) : (
+        <S.MenuButton onClick={ handleRunClick } disabled={ !canSolve || isRunning }>
+          Run
+        </S.MenuButton>
+      ) }
     </S.Menu>
   );
 };

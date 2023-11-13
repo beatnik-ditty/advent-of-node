@@ -1,16 +1,22 @@
 import { Request, Response } from 'express';
 
-import { runSolution } from '@aon/solver';
+import { cancel, solve } from '@aon/solver';
 import { InputModel } from '@aon/util-types';
 
 export const postSolution = async (req: Request, res: Response) => {
   try {
     const { id, part } = req.body;
 
-    const { year, day, input } = await InputModel.findById(id).select(['year', 'day', 'input']).exec();
-    const solution = await runSolution(year, day, part, input);
+    if (id) {
+      const { year, day, input } = await InputModel.findById(id).select(['year', 'day', 'input']).exec();
+      const solution = await solve(year, day, part, input);
 
-    res.status(201).json({ ...solution });
+      res.status(201).json({ ...solution });
+    } else {
+      await cancel();
+
+      res.sendStatus(200);
+    }
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

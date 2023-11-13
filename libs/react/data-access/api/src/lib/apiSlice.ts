@@ -72,9 +72,16 @@ export const apiSlice = createApi({
         body,
       }),
     }),
+    cancelSolution: builder.mutation<null, null>({
+      query: () => ({
+        url: SOLVE,
+        method: 'POST',
+        body: {},
+      }),
+    }),
 
     // PATCH
-    updateCalendar: builder.mutation<Calendar, { year: number; day?: number; stars?: number; title?: string }>({
+    updateCalendar: builder.mutation<null, { year: number; day?: number; stars?: number; title?: string }>({
       query: body => ({
         url: CALENDAR,
         method: 'PATCH',
@@ -82,7 +89,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: 'Calendar', id: arg.year }],
     }),
-    updatePuzzle: builder.mutation<Puzzle, CalendarDay>({
+    updatePuzzle: builder.mutation<null, CalendarDay>({
       query: body => ({
         url: PUZZLE,
         method: 'PATCH',
@@ -90,7 +97,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: 'Puzzle', id: `${arg.year}_${arg.day}` }],
     }),
-    updateInput: builder.mutation<Input, CalendarDay & { id: string; position?: 1 | -1 } & Partial<Input>>({
+    updateInput: builder.mutation<null, CalendarDay & { id: string; position?: 1 | -1 } & Partial<Input>>({
       query: ({ year, day, ...body }) => ({
         url: INPUT,
         method: 'PATCH',
@@ -100,7 +107,7 @@ export const apiSlice = createApi({
     }),
 
     // DELETE
-    deleteInput: builder.mutation<Input, CalendarDay & { id: string }>({
+    deleteInput: builder.mutation<null, CalendarDay & { id: string }>({
       query: ({ year, day, ...body }) => ({
         url: INPUT,
         method: 'DELETE',
@@ -120,6 +127,7 @@ export const {
   useCreatePuzzleMutation,
   useCreateInputMutation,
   useCreateSolutionMutation,
+  useCancelSolutionMutation,
 
   useUpdateCalendarMutation,
   useUpdatePuzzleMutation,
