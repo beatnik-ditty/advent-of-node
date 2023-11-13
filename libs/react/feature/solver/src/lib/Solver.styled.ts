@@ -196,6 +196,22 @@ export const Em = styled.em({
   textShadow: '0 0 5px #ffffff',
 });
 
+export const Ul = styled.ul({
+  listStyleType: 'none',
+  padding: 0,
+});
+
+export const Li = styled.li({
+  paddingLeft: '2.5em',
+  position: 'relative',
+  '&::before': {
+    content: '"\\00a0\\00a0-\\00a0"',
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  },
+});
+
 export const EasterEgg = styled.span(({ title }) => ({
   ...(title && { borderBottom: '1px dotted #ffff66' }),
 }));
