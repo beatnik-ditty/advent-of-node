@@ -299,12 +299,12 @@ const puzzleDisplayFC = (name: string): FC<PropsWithChildren> => {
       return props => <S.Code { ...props } />;
     case 'em':
       return props => <S.Em { ...props } />;
+    case 'ul':
+      return props => <S.Ul { ...props } />;
+    case 'li':
+      return props => <S.Li { ...props } />;
     case 'pre':
       return props => <pre { ...props } />;
-    case 'ul':
-      return props => <ul { ...props } />;
-    case 'li':
-      return props => <li { ...props } />;
     case 'a':
       return Anchor;
     case 'h2':
@@ -313,6 +313,8 @@ const puzzleDisplayFC = (name: string): FC<PropsWithChildren> => {
       return P;
     case 'span':
       return Span;
+    case 'br':
+      return () => <br />;
     default:
       return () => null;
   }

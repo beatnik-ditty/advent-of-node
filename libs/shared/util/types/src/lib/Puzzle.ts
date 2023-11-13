@@ -16,7 +16,7 @@ NestedPuzzleNodeSchema.add({
 
 const PuzzleNodeSchema = NestedPuzzleNodeSchema;
 
-export const elementTags = ['main', 'article', 'h2', 'p', 'a', 'em', 'pre', 'code', 'ul', 'li', 'span'];
+export const elementTags = ['main', 'article', 'h2', 'p', 'a', 'em', 'pre', 'code', 'ul', 'li', 'span', 'br'];
 type ElementTag = (typeof elementTags)[number];
 
 export interface PuzzleTextNode {
