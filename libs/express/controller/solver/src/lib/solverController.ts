@@ -19,9 +19,10 @@ export const postSolution = async (req: Request, res: Response) => {
       });
       worker.on('exit', code => {
         if (code !== 0) {
-          res.status(201).json({ result: `Thread terminated with exit code: ${code}` });
+          res.status(201).json({ result: `Thread terminated with exit code: ${code}`, time: 0 });
         }
       });
+      currentWorker = worker;
     } else {
       await currentWorker?.terminate();
       res.sendStatus(200);
