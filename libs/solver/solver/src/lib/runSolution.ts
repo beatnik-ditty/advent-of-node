@@ -1,3 +1,4 @@
+import { hrtime } from 'process';
 import { parentPort, workerData } from 'worker_threads';
 
 import * as solvers from './solvers';
@@ -5,13 +6,16 @@ import * as solvers from './solvers';
 const { year, day, part, input } = workerData;
 
 const solver = solvers[`day_${day}_${year}`];
+const start = hrtime.bigint();
 if (!solver) {
-  parentPort.postMessage(`No solver found for December ${day}, ${year}`);
+  parentPort.postMessage({ result: `No solver found for December ${day}, ${year}` });
 } else {
   try {
     const result = solver(input, part);
-    parentPort.postMessage(`${result}`);
+    const time = Number((hrtime.bigint() - start) / 1000n);
+    parentPort.postMessage({ result, time });
   } catch (err) {
-    parentPort.postMessage(err.message);
+    const time = Number((hrtime.bigint() - start) / 1000n);
+    parentPort.postMessage({ result: err.message, time });
   }
 }

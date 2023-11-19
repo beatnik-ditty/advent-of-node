@@ -1,1 +1,1 @@
-export * from './lib/solve';
+export * from './lib/runSolution';
