@@ -11,39 +11,21 @@ export const solverGenerator = async (tree: Tree, options: SolverGeneratorSchema
     throw new Error(`Invalid option. I honestly wrote this check as a joke. Who hurt you?`);
   }
   const libraryRoot = readProjectConfiguration(tree, 'solver').root;
-  if (tree.exists(joinPathFragments(libraryRoot, `src/lib/solvers/${options.year}`))) {
-    throw new Error(`Invalid destination: Path [solvers/${options.year}] is not empty`);
+  if (tree.exists(joinPathFragments(libraryRoot, `src/lib/${options.year}`))) {
+    throw new Error(`Invalid destination: Path [src/lib/${options.year}] is not empty`);
   }
-  for (let i = 1; i <= 24; i++) {
-    generateFiles(tree, joinPathFragments(__dirname, 'solvers'), libraryRoot, {
+  for (let day = 1; day <= 24; day++) {
+    generateFiles(tree, joinPathFragments(__dirname, 'files'), libraryRoot, {
       ...options,
-      day: i,
-      paddedDay: `${i < 10 ? '0' : ''}${i}`,
+      day,
+      paddedDay: `${day < 10 ? '0' : ''}${day}`,
     });
   }
-  generateFiles(tree, joinPathFragments(__dirname, 'singles'), libraryRoot, options);
-  updateSolverIndex(tree, libraryRoot, options.year);
+  tree.write(
+    joinPathFragments(libraryRoot, `src/lib/${options.year}/Day25.ts`),
+    Buffer.from("import { input, output } from '../solver';\n\noutput('Day 25');\n"),
+  );
   await formatFiles(tree);
-};
-
-const updateSolverIndex = (tree: Tree, libraryRoot: string, year: number) => {
-  const filePath = joinPathFragments(libraryRoot, 'src/lib/solvers/index.ts');
-  const solverIndex = tree.read(filePath);
-
-  if (solverIndex) {
-    const indexTs = solverIndex.toString();
-    const years = [...indexTs.matchAll(/'.\/(\d{4})'/g)].map(match => parseInt(match[1]));
-    years.push(year);
-    tree.write(
-      filePath,
-      Buffer.concat(
-        years
-          .filter((year, index) => years.indexOf(year) === index)
-          .sort()
-          .map(year => Buffer.from(`export * from './${year}';\n`)),
-      ),
-    );
-  }
 };
 
 export default solverGenerator;

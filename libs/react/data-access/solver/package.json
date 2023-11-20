@@ -2,8 +2,8 @@
   "name": "@aon/data-access-solver",
   "version": "0.0.1",
   "dependencies": {
-    "tslib": "^2.3.0",
+    "@aon/util-local-storage": "*",
     "@reduxjs/toolkit": "1.9.7",
-    "@aon/util-local-storage": "*"
+    "tslib": "^2.3.0"
   }
 }

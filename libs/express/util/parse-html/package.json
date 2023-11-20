@@ -2,9 +2,9 @@
   "name": "@aon/util-parse-html",
   "version": "0.0.1",
   "dependencies": {
-    "tslib": "^2.3.0",
+    "@aon/util-types": "*",
     "domhandler": "5.0.3",
     "htmlparser2": "9.0.0",
-    "@aon/util-types": "*"
+    "tslib": "^2.3.0"
   }
 }

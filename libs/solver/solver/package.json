@@ -2,8 +2,8 @@
   "name": "@aon/solver",
   "version": "0.0.1",
   "dependencies": {
-    "tslib": "^2.3.0",
+    "@aon/solver-helpers": "*",
     "process": "0.11.10",
-    "@aon/solver-helpers": "*"
+    "tslib": "^2.3.0"
   }
 }

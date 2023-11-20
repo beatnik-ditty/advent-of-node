@@ -2,10 +2,10 @@
   "name": "@aon/service-aoc",
   "version": "0.0.1",
   "dependencies": {
-    "tslib": "^2.3.0",
+    "@aon/util-date": "*",
+    "@aon/util-parse-html": "*",
     "lodash": "4.17.21",
     "node-fetch": "2.7.0",
-    "@aon/util-date": "*",
-    "@aon/util-parse-html": "*"
+    "tslib": "^2.3.0"
   }
 }
