@@ -8,7 +8,7 @@ export const { input, part }: { input: string; part: 1 | 2 } = workerData;
 
 parentPort.postMessage({ start: hrtime.bigint() });
 
-export const output = (result: number | string) => {
+export const output = (result: unknown) => {
   parentPort.postMessage({ result: `${result}`, end: hrtime.bigint() });
   exit();
 };
