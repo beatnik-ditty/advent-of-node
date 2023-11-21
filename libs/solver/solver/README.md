@@ -14,11 +14,9 @@ yarn nx generate @aon/plugin-solver:solvers --year=<YEAR>
 
 You will need to launch `react-app` and `express-app` following the documentation in the root README. I recommend running the `express-app:serve` development target since it automatically rebuilds on save and allows debugging.
 
-Find the stub for the solution you want to start work on and start coding. The stub exports one function named with the format `day_$day_$year`. This name should not be changed. However, you can define other functions, classes, types, etc. in the file.
+Find the stub for the solution you want to start work on and start coding. The stub imports your input, which part to run (1 or 2), and an 'output()' function that you can call anywhere in the file to halt execution and return an answer.
 
-The function will be passed the puzzle input as a string, and the part (1 or 2) as a number. Your solution should be returned from the initial function as either a string or number. Anything more complicated may not render in the React App.
-
-Each time a solution is run, it is spun up on its own Node worker thread.Any variables defined in the root scope of the file (i.e., outside the solver function) will not persist between runs of your solution, so you are free to organize a solution any way you want without multiple runs interfering with each other.
+Each time a solution is run, it is spun up on its own Node worker thread. Any variables defined in the root scope of the file will not persist between runs of your solution.
 
 For algorithms, data structures, etc. that you plan to reuse, implement them in the helper library under `solver/helpers/src/lib` and export them using the library's `index.ts`. Anything you export there can be imported here using the `@aon/solver-helper` path.
 
