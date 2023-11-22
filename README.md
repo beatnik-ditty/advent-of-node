@@ -76,11 +76,11 @@ mongodb+srv://<user>:<password>@<url>/adventOfNode?retryWrites=true&w=majority
 To build and run the apps, open the Nx Console extension and navigate to `react-app` and `express-app` under the _apps_ directory. To solve puzzles, I recommend running
 
 ```
-react-app:preview:production
+react-app:build:production
 express-app:serve:development
 ```
 
-to host the React app at _http://localhost:4300_ and serve the Express app at _http://localhost:3333_
+The first step generates the static files for `react-app`. `express-app` will then serve them at the default base url of _http://localhost:3333_
 
 Alternatively, I've set up some build and run tasks in the tasks.json for use in this project. Look there for some guidelines on setting keybindings.
 
@@ -89,7 +89,7 @@ Alternatively, I've set up some build and run tasks in the tasks.json for use in
 If the Nx Console extension isn't available in your IDE, you will instead need to execute Nx commands from the command line.
 
 ```
-yarn nx run react-app:preview
+yarn nx run react-app:build
 yarn nx run express-app:serve
 ```
 

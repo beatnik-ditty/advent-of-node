@@ -22,4 +22,6 @@ server.on('error', console.error);
 initMongoService();
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '..', 'react-app')));
+
 app.use('/', router());
