@@ -3,11 +3,13 @@ import { Router } from 'express';
 import { calendarRoute } from './router/calendar';
 import { inputRoute } from './router/input';
 import { puzzleRoute } from './router/puzzle';
+import { reactAppRoute } from './router/reactApp';
 import { solverRoute } from './router/solver';
 
 const baseRouter = Router();
 
 export const router = (): Router => {
+  reactAppRoute(baseRouter);
   calendarRoute(baseRouter);
   puzzleRoute(baseRouter);
   inputRoute(baseRouter);
