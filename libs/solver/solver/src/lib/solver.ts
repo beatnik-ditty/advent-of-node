@@ -15,7 +15,7 @@ export const output = (result: unknown) => {
 const { year, day } = workerData;
 
 try {
-  require(`./${year}/Day${day < 10 ? '0' : ''}${day}`);
+  await require(`./${year}/Day${day < 10 ? '0' : ''}${day}`);
 } catch (err) {
   output(err.message);
 }

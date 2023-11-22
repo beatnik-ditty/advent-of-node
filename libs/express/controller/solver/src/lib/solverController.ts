@@ -1,10 +1,14 @@
 import { Request, Response } from 'express';
-import { hrtime } from 'process';
+import { hrtime, stderr, stdin, stdout } from 'process';
 import { Worker } from 'worker_threads';
 
 import { InputModel } from '@aon/util-types';
 
 let currentWorker: Worker;
+
+stdin.on('data', data => {
+  currentWorker?.stdin.write(data);
+});
 
 export const postSolution = async (req: Request, res: Response) => {
   try {
@@ -16,14 +20,26 @@ export const postSolution = async (req: Request, res: Response) => {
 
       let received: { result?: string; start?: bigint; end?: bigint } = {};
 
-      const worker = new Worker(new URL('@aon/solver', import.meta.url), { workerData: { year, day, part, input } });
+      const worker = new Worker(new URL('@aon/solver', import.meta.url), {
+        stdin: true,
+        stdout: true,
+        stderr: true,
+        workerData: { year, day, part, input },
+      });
+      worker.stdout.on('data', data => {
+        stdout.write(data);
+      });
+      worker.stderr.on('data', data => {
+        stderr.write(data);
+      });
+
       worker.on('message', message => {
         received = { ...received, ...message };
       });
       worker.on('exit', code => {
         const { result, start, end } = received;
         if (code === 0) {
-          res.status(201).json({ result, time: timeElapsed(start, end) });
+          res.status(201).json({ result: result ?? 'Solution runner exited with no solution', time: timeElapsed(start, end) });
         } else {
           res.status(201).json({ result: `Solution runner canceled`, time: timeElapsed(start, end) });
         }
