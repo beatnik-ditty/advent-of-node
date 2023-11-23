@@ -92,7 +92,7 @@ const NavMenu = ({ day }: { day: number }) => {
   const { year } = useAppSelector(state => state.calendar);
   const dispatch = useAppDispatch();
   const highestDay = year === presentYear ? presentDay : 25;
-  const aocLink = `${VITE_AOC_URL}/${year}/day/${day}`;
+  const aocLink = `${VITE_AOC_URL || 'https://adventofcode.com'}/${year}/day/${day}`;
 
   return (
     <S.NavMenu>

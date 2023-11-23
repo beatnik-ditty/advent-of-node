@@ -11,7 +11,7 @@ const SOLVE = '/solve';
 
 export const apiSlice = createApi({
   reducerPath: 'aocApi',
-  baseQuery: fetchBaseQuery({ baseUrl: VITE_EXPRESS_SERVER_URL }),
+  baseQuery: fetchBaseQuery({ baseUrl: VITE_EXPRESS_SERVER_URL || '/' }),
   tagTypes: ['Calendar', 'Puzzle', 'Input'],
   endpoints: builder => ({
     // GET
