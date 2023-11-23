@@ -238,6 +238,10 @@ export const Code = styled.code({
   },
 });
 
+export const FormatError = styled(Code)({
+  color: 'red',
+});
+
 export const InputBody = styled.div({
   display: 'grid',
   gridTemplate: '93% 7% / 100%',

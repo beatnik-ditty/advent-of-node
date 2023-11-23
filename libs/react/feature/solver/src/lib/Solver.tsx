@@ -337,7 +337,7 @@ const InputBody = ({ day }: { day: number }) => {
 
   const { data } = api.useFetchInputQuery({ year, day, custom: false });
   const id = isCustomInput ? inputs[day].id : data?.inputs[0]?.id ?? '';
-  const [createSolution, { data: solution, isLoading }] = api.useCreateSolutionMutation({ fixedCacheKey: `solution_${id}_${part}` });
+  const [createSolution, { data: solution, isLoading, error }] = api.useCreateSolutionMutation({ fixedCacheKey: `solution_${id}_${part}` });
   const [updateInput] = api.useUpdateInputMutation({ fixedCacheKey: `updateInput${year}_${day}` });
 
   const runSolver = () => {
@@ -355,7 +355,7 @@ const InputBody = ({ day }: { day: number }) => {
         <S.Content>
           <S.Article>
             <Input day={ day } />
-            <Result { ...{ part, ...solution } } />
+            <Result { ...{ part, error, ...solution } } />
           </S.Article>
         </S.Content>
       </S.Pane>
@@ -571,17 +571,19 @@ const formatTime = (time: number) => {
   }
 };
 
-const Result = ({ part, result, time }: { part: number; result?: string; time?: number }) => {
-  return result != null && time != null ? (
+const Result = ({ part, result, time, error }: { part: number; result?: string; time?: number; error?: unknown }) =>
+  (result != null && time != null) || error != null ? (
     <>
       <S.ResultHeader>--- Part { part } result ---</S.ResultHeader>
       <pre>
-        <S.Code>{ result }</S.Code>
+        { result ? <S.Code>{ result }</S.Code> : null }
+        { typeof error === 'object' && 'error' in (error as { error: string }) ? (
+          <S.FormatError>{ (error as { error: string }).error }</S.FormatError>
+        ) : null }
       </pre>
-      <p>Ran in { formatTime(time) }</p>
+      <p>Ran in { formatTime(time || 0) }</p>
     </>
   ) : null;
-};
 
 const InputMenu = ({ canSolve, isRunning, createSolution }: { canSolve: unknown; isRunning: unknown; createSolution: () => void }) => {
   const { part, isCustomInput, hideCustomInput, hidePuzzleInput } = useAppSelector(state => state.solver);
