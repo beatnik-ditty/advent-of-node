@@ -13,7 +13,14 @@ export const presentDate = () => {
     .split(/\/|,.*$/gi)
     .map(Number);
 
-  return month < 12 ? { year: year - 1, day: 25 } : { year, day: Math.min(day, 25) };
+  switch (month) {
+    case 12:
+      return { year, day: Math.min(day, 25) };
+    case 11:
+      return { year, day: 0 };
+    default:
+      return { year: year - 1, day: 25 };
+  }
 };
 
 const date: CalendarDay = presentDate();

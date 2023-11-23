@@ -11,13 +11,13 @@ describe('current date', () => {
   afterAll(() => jest.useRealTimers());
 
   describe('dates are correct', () => {
-    it('before December', () => {
-      jest.setSystemTime(new Date(Date.UTC(2016, 10, 30)));
+    it('before November in New York', () => {
+      jest.setSystemTime(new Date(Date.UTC(2016, 10, 1)));
       expect(presentDate()).toEqual({ year: 2015, day: 25 });
     });
     it('before December in New York', () => {
       jest.setSystemTime(new Date(Date.UTC(2016, 11, 1, 4)));
-      expect(presentDate()).toEqual({ year: 2015, day: 25 });
+      expect(presentDate()).toEqual({ year: 2016, day: 0 });
     });
     it('December 1st', () => {
       jest.setSystemTime(new Date(Date.UTC(2016, 11, 1, 5)));
