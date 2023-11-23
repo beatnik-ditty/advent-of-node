@@ -10,6 +10,8 @@ To get started, generate stubs for the year you want to start work on. Run this 
 yarn nx generate @aon/plugin-solver:solvers --year=<YEAR>
 ```
 
+To generate JavaScript stubs instead of TypeScript, add the `--js` flag.
+
 ## Solving Puzzles
 
 You will need to build `react-app` and launch `express-app` following the documentation in the root README. I recommend running the `express-app:serve` development target since it automatically rebuilds on save and allows debugging.

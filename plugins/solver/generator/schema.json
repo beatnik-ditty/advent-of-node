@@ -7,6 +7,10 @@
     "year": {
       "type": "number",
       "description": "The year that the solver package is being generated for"
+    },
+    "js": {
+      "type": "boolean",
+      "description": "Generate JavaScript solution files instead of TypeScript"
     }
   },
   "required": ["year"]

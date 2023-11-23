@@ -1,12 +1,12 @@
 # Advent of Node
 
-A full-stack dev environment to solve [Advent of Code](https://adventofcode.com) challenges in TypeScript.
+A full-stack dev environment to solve [Advent of Code](https://adventofcode.com) challenges in TypeScript or JavaScript.
 
 <img src="https://img.shields.io/badge/yarn-v1.22.19-blue" /> <img src="https://img.shields.io/badge/Nx-v17.0.3-blue" /> <img src="https://img.shields.io/badge/React-v18.2.0-blue" /> <img src="https://img.shields.io/badge/Express-v4.18.1-blue" /> <img src="https://img.shields.io/badge/license-BSD--3-green" />
 
 ## About
 
-Advent of Node is a full webapp stack bundled in an [Nx monorepo](https://nx.dev/) workspace and configured to use TypeScript. The repo includes two apps: the backend `express-app` and frontend `react-app` along with their required libraries.
+Advent of Node is a full webapp stack bundled in an [Nx monorepo](https://nx.dev/) workspace. The repo includes two apps: the backend `express-app` and frontend `react-app` along with their required libraries.
 
 `express-app` is a Node Express server intended as a solution space for a single developer and should only ever be hosted locally. The server also fetches a puzzle's input and description for the user's account from the Advent of Code website, then stores the data in a personal Atlas MongoDB cloud instance to avoid hammering the AoC site.
 

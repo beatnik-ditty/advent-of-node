@@ -15,14 +15,14 @@ export const solverGenerator = async (tree: Tree, options: SolverGeneratorSchema
     throw new Error(`Invalid destination: Path [src/lib/${options.year}] is not empty`);
   }
   for (let day = 1; day <= 24; day++) {
-    generateFiles(tree, joinPathFragments(__dirname, 'files'), libraryRoot, {
+    generateFiles(tree, joinPathFragments(__dirname, options.js ? 'js' : 'ts'), libraryRoot, {
       ...options,
       day,
       paddedDay: `${day < 10 ? '0' : ''}${day}`,
     });
   }
   tree.write(
-    joinPathFragments(libraryRoot, `src/lib/${options.year}/Day25.ts`),
+    joinPathFragments(libraryRoot, `src/lib/${options.year}/Day25.${options.js ? 'js' : 'ts'}`),
     Buffer.from("import { input, output } from '../solver';\n\noutput('Day 25');\n"),
   );
   await formatFiles(tree);
