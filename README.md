@@ -43,9 +43,7 @@ I recommend installing the Nx console extension if it's available in your IDE. I
 
 ### Environment
 
-Prior to running the project, you will need to set some environment variables. There are _.env.example_ files in the main directories of both apps. You will need to add a _.env_ file at the same level in each app and copy the variable assignments from the _.env.example_.
-
-The _react-app/.env_ file should work out of the box. However, since `express-app` communicates with both the AoC website and your MongoDB instance, you will need to configure its _.env_ a bit.
+Prior to running the project, you will need to set some environment variables. There is an _.env.example_ file in the main directory of `express-app` to get you started. You will need to add a _.env_ file at the same level and copy the variables from the _.env.example_.
 
 `NX_AOC_SESSION`: This session ID is how you get your own account's data from the AoC website. AoC allows you to sign in using your account with another service that supports [OAuth](https://en.wikipedia.org/wiki/OAuth), but doesn't offer its own OAuth endpoint (which is probably [a good thing](https://medium.com/@ibm_ptc_security/oauth-2-0-security-and-vulnerabilities-86e64c22b03d)). As a result, this is basically the only way for your Advent of Node instance to access account-specific data (like your puzzle input).
 

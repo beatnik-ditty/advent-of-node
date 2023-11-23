@@ -13,9 +13,10 @@ app.get('/api', (_, res) => {
   res.send({ message: 'https://youtu.be/dQw4w9WgXcQ' });
 });
 
+const url = process.env.URL || 'http://localhost';
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
+  console.log(`Listening at ${url}:${port}`);
 });
 server.on('error', console.error);
 

@@ -12,7 +12,7 @@ yarn nx generate @aon/plugin-solver:solvers --year=<YEAR>
 
 ## Solving Puzzles
 
-You will need to launch `react-app` and `express-app` following the documentation in the root README. I recommend running the `express-app:serve` development target since it automatically rebuilds on save and allows debugging.
+You will need to build `react-app` and launch `express-app` following the documentation in the root README. I recommend running the `express-app:serve` development target since it automatically rebuilds on save and allows debugging.
 
 Find the stub for the solution you want to start work on and start coding. The stub imports your input, which part to run (1 or 2), and an 'output()' function that you can call anywhere in the file to halt execution and return an answer.
 

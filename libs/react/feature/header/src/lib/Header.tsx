@@ -50,7 +50,7 @@ const EventTitle = () => {
   const event = `${useAppSelector(state => state.calendar.year)}`;
   return (
     <S.H1>
-      <Anchor href={ `${VITE_AOC_URL}/${event}` } target='_blank' rel='noreferrer' headerStyle { ...{ wrapper } }>
+      <Anchor href={ `${VITE_AOC_URL || 'https://adventofcode.com'}/${event}` } target='_blank' rel='noreferrer' headerStyle { ...{ wrapper } }>
         { event }
       </Anchor>
     </S.H1>
@@ -62,7 +62,9 @@ const Nav: FC<{ links: { text: string; url: string; external?: boolean }[] }> = 
     <S.Ul>
       { links.map(({ text, url, external }, index) => (
         <S.Li key={ index }>
-          <Anchor { ...(external ? { href: `${VITE_AOC_URL}${url}`, target: '_blank' } : { href: url }) }>{ `[${text}]` }</Anchor>
+          <Anchor
+            { ...(external ? { href: `${VITE_AOC_URL || 'https://adventofcode.com'}${url}`, target: '_blank' } : { href: url }) }
+          >{ `[${text}]` }</Anchor>
         </S.Li>
       )) }
     </S.Ul>
