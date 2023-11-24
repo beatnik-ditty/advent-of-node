@@ -4,14 +4,14 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {}
-    },
-    {
-      "files": ["*.ts", "*.tsx"],
       "rules": {
         "prefer-const": "off",
         "no-autofix/prefer-const": "error"
       }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {}
     },
     {
       "files": ["*.js", "*.jsx"],
