@@ -24,8 +24,7 @@
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "react-app:build",
-        "proxyConfig": "apps/react-app/proxy.conf.json"
+        "buildTarget": "react-app:build"
       },
       "configurations": {
         "development": {
