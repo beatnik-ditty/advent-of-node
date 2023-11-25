@@ -63,7 +63,7 @@ const SingleGrid: FC<{ year: number }> = ({ year, ...restProps }) => (
 const Cell = ({ year, day }: CalendarDay) => {
   const dispatch = useAppDispatch();
   const { data: calendar, isLoading } = useFetchCalendarQuery({ year });
-  const [createPage, { isUninitialized }] = useCreateCalendarMutation({ fixedCacheKey: `calendar-${year}` });
+  const [createPage, { isUninitialized }] = useCreateCalendarMutation({ fixedCacheKey: `calendar${year}` });
 
   useEffect(
     function createPageIfAbsent() {

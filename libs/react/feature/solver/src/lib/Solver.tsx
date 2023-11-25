@@ -1,8 +1,9 @@
-import { QueryStatus } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError, QueryStatus } from '@reduxjs/toolkit/query';
 import { ChangeEvent, FC, FocusEvent, MouseEvent, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
 
 import * as api from '@aon/data-access-api';
-import * as rx from '@aon/data-access-solver';
+import * as redux from '@aon/data-access-solver';
 import { useAppDispatch, useAppSelector } from '@aon/data-access-store';
 import { TitleDiv } from '@aon/ui-animations';
 import { Anchor, Banner } from '@aon/ui-components';
@@ -18,7 +19,7 @@ export const Solver: FC = props => {
   const { status, day, newDay } = useAppSelector(state => state.solver);
   const dispatch = useAppDispatch();
 
-  const onAnimationEnd = () => dispatch(rx.endAnimation());
+  const onAnimationEnd = () => dispatch(redux.endAnimation());
 
   return status !== 'closed' ? (
     <S.SolverWindow { ...props }>
@@ -45,7 +46,7 @@ const SolverContainer: FC<{ incoming?: boolean }> = ({ incoming, ...restProps })
   );
 };
 
-const openAnimation = (status: rx.Status) => ({
+const openAnimation = (status: redux.Status) => ({
   ...((status === 'opening' || status === 'closing') && { transition: status }),
 });
 
@@ -53,7 +54,7 @@ const BannerContainer = ({ day, stars, puzzleTitle }: { day: number; stars?: num
   const { status } = useAppSelector(state => state.solver);
   const dispatch = useAppDispatch();
 
-  const onAnimationEnd = () => dispatch(rx.endAnimation());
+  const onAnimationEnd = () => dispatch(redux.endAnimation());
   const transition = openAnimation(status).transition;
   return (
     <S.BannerContainer { ...{ day, ...openAnimation(status), onAnimationEnd } }>
@@ -96,14 +97,14 @@ const NavMenu = ({ day }: { day: number }) => {
 
   return (
     <S.NavMenu>
-      <S.NavButton onClick={ () => dispatch(rx.chooseDay(day - 1)) } disabled={ day <= 1 }>
+      <S.NavButton onClick={ () => dispatch(redux.chooseDay(day - 1)) } disabled={ day <= 1 }>
         { '<' }
       </S.NavButton>
       <S.ExternalButton onClick={ () => window.open(aocLink) } tooltip={ 'Go to puzzle' }>
         <span>{ `//` }</span>
         <S.StarSpan>*</S.StarSpan>
       </S.ExternalButton>
-      <S.NavButton onClick={ () => dispatch(rx.chooseDay(day + 1)) } disabled={ day >= highestDay }>
+      <S.NavButton onClick={ () => dispatch(redux.chooseDay(day + 1)) } disabled={ day >= highestDay }>
         { '>' }
       </S.NavButton>
     </S.NavMenu>
@@ -116,14 +117,16 @@ const MainMenu = ({ day }: { day: number }) => {
   const { inputs, isCustomInput, canSave } = useAppSelector(state => state.solver);
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: savedInputs } = api.useFetchInputQuery({ year, day, custom: true });
-  const [createInput] = api.useCreateInputMutation({ fixedCacheKey: `createInput${year}_${day}` });
-  const [updateInput] = api.useUpdateInputMutation({ fixedCacheKey: `updateInput${year}_${day}` });
-  const [deleteInput] = api.useDeleteInputMutation({ fixedCacheKey: `deleteInput${year}_${day}` });
+
+  const id = inputs[day].id ?? '';
+  const [createInput] = api.useCreateInputMutation({ fixedCacheKey: `create${isCustomInput ? 'Custom' : ''}Input${year}_${day}` });
+  const [updateInput] = api.useUpdateInputMutation({ fixedCacheKey: `updateInput${id}` });
+  const [deleteInput] = api.useDeleteInputMutation({ fixedCacheKey: `deleteInput${id}` });
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const createNewInput = () => {
     if (!canSave || unsavedConfirmation()) {
-      !isCustomInput && dispatch(rx.toggleSetting('useCustom'));
+      !isCustomInput && dispatch(redux.toggleSetting('useCustom'));
       createInput({ year, day, custom: true })
         .then(response => {
           'data' in response && updateInput({ year, day, id: response.data.id, mostRecent: true });
@@ -156,7 +159,7 @@ const MainMenu = ({ day }: { day: number }) => {
   );
 
   const close = () => {
-    (!canSave || unsavedConfirmation()) && dispatch(rx.closeSolver());
+    (!canSave || unsavedConfirmation()) && dispatch(redux.closeSolver());
   };
 
   return (
@@ -186,7 +189,7 @@ const MainMenu = ({ day }: { day: number }) => {
                 onClick={ (event: Event) => {
                   event.stopPropagation();
                   if (!isCustomInput || input.id !== inputs[day].id) {
-                    !isCustomInput && dispatch(rx.toggleSetting('useCustom'));
+                    !isCustomInput && dispatch(redux.toggleSetting('useCustom'));
                     input.id !== inputs[day].id && updateInput({ year, day, id: input.id, mostRecent: true });
                     setMenuOpen(false);
                   }
@@ -230,7 +233,7 @@ const PuzzlePane = ({ day }: { day: number }) => {
 
   const { data: headerData } = api.useFetchCalendarQuery({ year });
   const { data, isLoading } = api.useFetchPuzzleQuery({ year, day });
-  const [create, { isUninitialized }] = api.useCreatePuzzleMutation({ fixedCacheKey: `create-puzzle-${year}-${day}` });
+  const [create, { isUninitialized }] = api.useCreatePuzzleMutation({ fixedCacheKey: `createPuzzle${year}_${day}` });
   const [update, { status: updateStatus }] = api.useUpdateCalendarMutation();
 
   const { stars: puzzleStars, title: puzzleTitle } = headerData?.days[day - 1] ?? {};
@@ -333,20 +336,11 @@ const Span: FC<PropsWithChildren<{ title?: string }>> = props => {
 
 const InputBody = ({ day }: { day: number }) => {
   const { year } = useAppSelector(state => state.calendar);
-  const { part, inputs, isCustomInput, canSave } = useAppSelector(state => state.solver);
+  const { part, inputs, isCustomInput } = useAppSelector(state => state.solver);
 
   const { data } = api.useFetchInputQuery({ year, day, custom: false });
   const id = isCustomInput ? inputs[day].id : data?.inputs[0]?.id ?? '';
-  const [createSolution, { data: solution, isLoading, error }] = api.useCreateSolutionMutation({ fixedCacheKey: `solution_${id}_${part}` });
-  const [updateInput] = api.useUpdateInputMutation({ fixedCacheKey: `updateInput${year}_${day}` });
-
-  const runSolver = () => {
-    if (isCustomInput && canSave) {
-      updateInput({ year, day, ...inputs[day] }).then(() => createSolution({ id, part }));
-    } else {
-      createSolution({ id, part });
-    }
-  };
+  const [, { data: solution, error }] = api.useCreateSolutionMutation({ fixedCacheKey: `solution${id}_${part}` });
 
   const Input = isCustomInput ? CustomInput : PuzzleInput;
   return (
@@ -355,11 +349,12 @@ const InputBody = ({ day }: { day: number }) => {
         <S.Content>
           <S.Article>
             <Input day={ day } />
-            <Result { ...{ part, error, ...solution } } />
+            <Result { ...{ part, ...solution } } />
+            <FormattedError error={ error } />
           </S.Article>
         </S.Content>
       </S.Pane>
-      <InputMenu createSolution={ runSolver } canSolve={ id } isRunning={ isLoading } />
+      <InputMenu day={ day } />
     </S.InputBody>
   );
 };
@@ -368,8 +363,10 @@ const CustomInput: FC<{ day: number }> = ({ day }) => {
   const { year } = useAppSelector(state => state.calendar);
   const { inputs, canSave } = useAppSelector(state => state.solver);
   const { input, title, id } = inputs[day];
-  const { data } = api.useFetchInputQuery({ year, day, custom: true, mostRecent: true });
-  const [updateInput] = api.useUpdateInputMutation({ fixedCacheKey: `updateInput${year}_${day}` });
+  const { data, error: fetchError } = api.useFetchInputQuery({ year, day, custom: true, mostRecent: true });
+  const [updateInput, { error: updateError }] = api.useUpdateInputMutation({ fixedCacheKey: `updateInput${id}` });
+  const [, { error: deleteError }] = api.useDeleteInputMutation({ fixedCacheKey: `deleteInput${id}` });
+  const [, { error: createError }] = api.useCreateInputMutation({ fixedCacheKey: `createCustomInput${year}_${day}` });
 
   const dispatch = useAppDispatch();
 
@@ -378,9 +375,9 @@ const CustomInput: FC<{ day: number }> = ({ day }) => {
   useEffect(
     function checkEditSync() {
       if (savedInput?.id !== id) {
-        dispatch(rx.loadFetchedInput({ day, id: '', ...savedInput }));
+        dispatch(redux.loadFetchedInput({ day, id: '', ...savedInput }));
       }
-      dispatch(rx.updateCanSave(!!savedInput && (savedInput.input !== input || savedInput.title !== title)));
+      dispatch(redux.updateCanSave(!!savedInput && (savedInput.input !== input || savedInput.title !== title)));
     },
     [day, dispatch, savedInput, id, input, title],
   );
@@ -389,9 +386,9 @@ const CustomInput: FC<{ day: number }> = ({ day }) => {
     (event: KeyboardEvent) => {
       if (event.ctrlKey) {
         if (event.key === 'z') {
-          dispatch(rx.undoInput());
+          dispatch(redux.undoInput());
         } else if (event.key === 'Z' || event.key === 'y') {
-          dispatch(rx.redoInput());
+          dispatch(redux.redoInput());
         } else if (event.key === 's') {
           event.preventDefault();
           canSave && updateInput({ year, day, ...inputs[day] });
@@ -415,6 +412,7 @@ const CustomInput: FC<{ day: number }> = ({ day }) => {
     <>
       <TitleInput day={ day } />
       <TextArea value={ input } placeholder={ 'Enter input' } />
+      <FormattedError error={ fetchError || updateError || createError || deleteError } />
     </>
   ) : null;
 };
@@ -422,8 +420,8 @@ const CustomInput: FC<{ day: number }> = ({ day }) => {
 const PuzzleInput: FC<{ day: number }> = ({ day }) => {
   const { year } = useAppSelector(state => state.calendar);
   const { data, isLoading } = api.useFetchInputQuery({ year, day, custom: false });
-  const [createInput, { isUninitialized }] = api.useCreateInputMutation({
-    fixedCacheKey: `create-input-${year}-${day}`,
+  const [createInput, { isUninitialized, error }] = api.useCreateInputMutation({
+    fixedCacheKey: `createInput${year}_${day}`,
   });
 
   const input = data?.inputs[0]?.input;
@@ -437,7 +435,12 @@ const PuzzleInput: FC<{ day: number }> = ({ day }) => {
     [day, year, data, isLoading, createInput, isUninitialized],
   );
 
-  return <TextArea readOnly value={ input ?? '' } placeholder={ 'Loading input...' } />;
+  return (
+    <>
+      <TextArea readOnly value={ input ?? '' } placeholder={ 'Loading input...' } />
+      <FormattedError error={ error } />
+    </>
+  );
 };
 
 const TitleInput: FC<{ day: number }> = ({ day }) => {
@@ -457,7 +460,7 @@ const TitleInput: FC<{ day: number }> = ({ day }) => {
   };
 
   const finishTitleEdit = useCallback(() => {
-    inputRef.current?.value != null && inputRef.current.value !== title && dispatch(rx.updateTitle(inputRef.current.value));
+    inputRef.current?.value != null && inputRef.current.value !== title && dispatch(redux.updateTitle(inputRef.current.value));
     setIsEditing(false);
   }, [dispatch, title]);
 
@@ -545,11 +548,11 @@ const TextArea: FC<{ value: string; placeholder: string; readOnly?: boolean }> =
           event.currentTarget.setSelectionRange(event.target.value.length, event.target.value.length);
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-          dispatch(rx.userInput(event.target.value.replace('\t', '\n')));
+          dispatch(redux.userInput(event.target.value.replace('\t', '\n')));
         },
         onClick: (event: MouseEvent) => {
           if (event.detail === 2) {
-            dispatch(rx.userInput(''));
+            dispatch(redux.userInput(''));
           }
         },
       };
@@ -571,63 +574,79 @@ const formatTime = (time: number) => {
   }
 };
 
-const Result = ({ part, result, time, error }: { part: number; result?: string; time?: number; error?: unknown }) =>
-  (result != null && time != null) || error != null ? (
+const Result = ({ part, result, time }: { part: number; result?: string; time?: number }) =>
+  result != null && time != null ? (
     <>
       <S.ResultHeader>--- Part { part } result ---</S.ResultHeader>
-      <pre>
-        { result ? <S.Code>{ result }</S.Code> : null }
-        { typeof error === 'object' && 'error' in (error as { error: string }) ? (
-          <S.FormatError>{ (error as { error: string }).error }</S.FormatError>
-        ) : null }
-      </pre>
+      <pre>{ result ? <S.Code>{ result }</S.Code> : null }</pre>
       <p>Ran in { formatTime(time || 0) }</p>
     </>
   ) : null;
 
-const InputMenu = ({ canSolve, isRunning, createSolution }: { canSolve: unknown; isRunning: unknown; createSolution: () => void }) => {
-  const { part, isCustomInput, hideCustomInput, hidePuzzleInput } = useAppSelector(state => state.solver);
-  const dispatch = useAppDispatch();
+const FormattedError = ({ error }: { error?: FetchBaseQueryError | SerializedError }) =>
+  // Because RTK throws a parsing error on a status-only response
+  error && (!('status' in error) || error.status !== 'PARSING_ERROR') ? (
+    <S.FormatError>
+      { 'status' in error
+        ? typeof error.status === 'string'
+          ? `${error.status}: ${error.error}`
+          : `FetchBaseQueryError ${error.status}`
+        : `${error.name || 'SerializedError'}${error.message ? `: ${error.message}` : ''}` }
+    </S.FormatError>
+  ) : null;
 
+const InputMenu = ({ day }: { day: number }) => {
+  const { year } = useAppSelector(state => state.calendar);
+  const { part, inputs, isCustomInput, hideCustomInput, hidePuzzleInput, canSave } = useAppSelector(state => state.solver);
+
+  const { data: puzzleInput } = api.useFetchInputQuery({ year, day, custom: false });
+  const id = isCustomInput ? inputs[day].id : puzzleInput?.inputs[0]?.id ?? '';
+
+  const [createSolution, { isLoading }] = api.useCreateSolutionMutation({ fixedCacheKey: `solution${id}_${part}` });
+  const [updateInput] = api.useUpdateInputMutation({ fixedCacheKey: `updateInput${id}` });
   const [cancelSolution] = api.useCancelSolutionMutation();
+
+  const dispatch = useAppDispatch();
 
   const [cancel, setCancel] = useState(false);
   const [cancelDelay, setCancelDelay] = useState<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(
     function clearCancel() {
-      if (!isRunning) {
+      if (!isLoading) {
         clearTimeout(cancelDelay);
         setCancel(false);
       }
     },
-    [cancelDelay, isRunning],
+    [cancelDelay, isLoading],
   );
 
   const handleRunClick = () => {
+    if (isCustomInput && canSave) {
+      updateInput({ year, day, ...inputs[day] }).then(() => createSolution({ id, part }));
+    } else {
+      createSolution({ id, part });
+    }
     setCancelDelay(
       setTimeout(() => {
         setCancel(true);
       }, 500),
     );
-    createSolution();
   };
 
   return (
     <S.Menu>
-      <S.MenuButton onClick={ () => dispatch(rx.toggleSetting('useCustom')) } disabled={ isRunning }>
+      <S.MenuButton onClick={ () => dispatch(redux.toggleSetting('useCustom')) }>
         Use { isCustomInput ? 'Puzzle' : 'Custom' } Input
       </S.MenuButton>
-      <S.MenuButton onClick={ () => dispatch(rx.toggleSetting('hideInput')) } disabled={ isRunning }>
+      <S.MenuButton onClick={ () => dispatch(redux.toggleSetting('hideInput')) }>
         { (isCustomInput ? hideCustomInput : hidePuzzleInput) ? 'Show' : 'Hide' } Input
       </S.MenuButton>
-      <S.MenuButton onClick={ () => dispatch(rx.toggleSetting('part')) } disabled={ isRunning }>
-        Part { part }
-      </S.MenuButton>
+      <S.MenuButton onClick={ () => dispatch(redux.toggleSetting('part')) }>Part { part }</S.MenuButton>
       { cancel ? (
         <S.MenuButton onClick={ cancelSolution }>Cancel</S.MenuButton>
       ) : (
-        <S.MenuButton onClick={ handleRunClick } disabled={ !canSolve || isRunning }>
+        <S.MenuButton onClick={ handleRunClick } disabled={ !id || isLoading }>
           Run
         </S.MenuButton>
       ) }

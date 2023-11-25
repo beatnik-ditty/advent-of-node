@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "@aon/util-local-storage": "*",
-    "@reduxjs/toolkit": "1.9.7",
+    "@reduxjs/toolkit": "2.0.0-rc.1",
     "tslib": "^2.3.0"
   }
 }
