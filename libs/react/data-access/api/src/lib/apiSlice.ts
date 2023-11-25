@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { Calendar, CalendarDay, Input, Inputs, Puzzle } from '@aon/util-types';
 
-const { VITE_EXPRESS_SERVER_URL } = import.meta.env;
+const { VITE_EXPRESS_SERVER_URL = '' } = import.meta.env;
 
 const CALENDAR = '/calendar';
 const PUZZLE = '/puzzle';
@@ -11,7 +11,7 @@ const SOLVE = '/solve';
 
 export const apiSlice = createApi({
   reducerPath: 'aocApi',
-  baseQuery: fetchBaseQuery({ baseUrl: VITE_EXPRESS_SERVER_URL || '/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: new URL('/api', VITE_EXPRESS_SERVER_URL).toString() }),
   tagTypes: ['Calendar', 'Puzzle', 'Input'],
   endpoints: builder => ({
     // GET

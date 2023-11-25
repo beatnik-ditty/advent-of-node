@@ -3,15 +3,12 @@ import express from 'express';
 import * as path from 'path';
 
 import { initMongoService } from '@aon/service-mongo';
-import { router } from './routes';
+import { apiRouter, router } from './router';
 
 const app = express();
 
 app.use(cors());
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
-app.get('/api', (_, res) => {
-  res.send({ message: 'https://youtu.be/dQw4w9WgXcQ' });
-});
 
 const url = process.env.URL || 'http://localhost';
 const port = process.env.PORT || 3333;
@@ -26,3 +23,4 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'react-app')));
 
 app.use('/', router());
+app.use('/api', apiRouter());
