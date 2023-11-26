@@ -21,7 +21,7 @@ export const apiSlice = createApi({
       }),
       providesTags: (_result, _error, arg) => [{ type: 'Calendar', id: arg.year }],
       transformResponse: (calendar: Calendar) => ({
-        totalStars: (calendar.days ?? []).map(({ stars }) => stars).reduce((acc, val) => acc + val, 0),
+        totalStars: calendar?.days?.map(({ stars }) => stars).reduce((acc, val) => acc + val, 0),
         ...calendar,
       }),
     }),

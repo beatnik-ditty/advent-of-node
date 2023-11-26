@@ -65,7 +65,6 @@ describe('Calendar model', () => {
     expect(calendar._id).toBeDefined();
 
     checkCalendar(calendar);
-    console.log(calendar);
   });
 
   it('fails on missing required fields', async () => {

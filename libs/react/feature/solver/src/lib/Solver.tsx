@@ -36,7 +36,7 @@ const SolverContainer: FC<{ incoming?: boolean }> = ({ incoming, ...restProps })
   const day = incoming ? newDay : presentDay;
   const direction = presentDay < newDay ? 'left' : 'right';
   const { data } = api.useFetchCalendarQuery({ year });
-  const { stars, title: puzzleTitle } = data?.days[day - 1] ?? {};
+  const { stars, title: puzzleTitle } = data?.days?.[day - 1] ?? {};
 
   return incoming && status !== 'sliding' ? null : (
     <S.SolverContainer { ...{ ...(status === 'sliding' && { direction, transition: incoming ? 'in' : 'out' }), ...restProps } }>
@@ -236,7 +236,7 @@ const PuzzlePane = ({ day }: { day: number }) => {
   const [create, { isUninitialized }] = api.useCreatePuzzleMutation({ fixedCacheKey: `createPuzzle${year}_${day}` });
   const [update, { status: updateStatus }] = api.useUpdateCalendarMutation();
 
-  const { stars: puzzleStars, title: puzzleTitle } = headerData?.days[day - 1] ?? {};
+  const { stars: puzzleStars, title: puzzleTitle } = headerData?.days?.[day - 1] ?? {};
 
   useEffect(
     function createPuzzleIfAbsent() {
@@ -339,7 +339,7 @@ const InputBody = ({ day }: { day: number }) => {
   const { part, inputs, isCustomInput } = useAppSelector(state => state.solver);
 
   const { data } = api.useFetchInputQuery({ year, day, custom: false });
-  const id = isCustomInput ? inputs[day].id : data?.inputs[0]?.id ?? '';
+  const id = isCustomInput ? inputs[day].id : data?.inputs?.[0]?.id ?? '';
   const [, { data: solution, error }] = api.useCreateSolutionMutation({ fixedCacheKey: `solution${id}_${part}` });
 
   const Input = isCustomInput ? CustomInput : PuzzleInput;
@@ -370,7 +370,7 @@ const CustomInput: FC<{ day: number }> = ({ day }) => {
 
   const dispatch = useAppDispatch();
 
-  const savedInput = data?.inputs[0];
+  const savedInput = data?.inputs?.[0];
 
   useEffect(
     function checkEditSync() {
@@ -424,7 +424,7 @@ const PuzzleInput: FC<{ day: number }> = ({ day }) => {
     fixedCacheKey: `createInput${year}_${day}`,
   });
 
-  const input = data?.inputs[0]?.input;
+  const input = data?.inputs?.[0]?.input;
 
   useEffect(
     function createInputIfAbsent() {
@@ -600,7 +600,7 @@ const InputMenu = ({ day }: { day: number }) => {
   const { part, inputs, isCustomInput, hideCustomInput, hidePuzzleInput, canSave } = useAppSelector(state => state.solver);
 
   const { data: puzzleInput } = api.useFetchInputQuery({ year, day, custom: false });
-  const id = isCustomInput ? inputs[day].id : puzzleInput?.inputs[0]?.id ?? '';
+  const id = isCustomInput ? inputs[day].id : puzzleInput?.inputs?.[0]?.id ?? '';
 
   const [createSolution, { isLoading }] = api.useCreateSolutionMutation({ fixedCacheKey: `solution${id}_${part}` });
   const [updateInput] = api.useUpdateInputMutation({ fixedCacheKey: `updateInput${id}` });
