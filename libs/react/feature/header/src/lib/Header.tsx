@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { useFetchCalendarQuery, useUpdateCalendarMutation, useUpdatePuzzleMutation } from '@aon/data-access-api';
+import * as api from '@aon/data-access-api';
 import { useAppSelector } from '@aon/data-access-store';
 import { Anchor } from '@aon/ui-components';
 import * as S from './Header.styled';
@@ -95,7 +95,7 @@ const wrapper = titleWrappers[Math.floor(Math.random() * 17)];
 
 const StarCount = () => {
   const { year } = useAppSelector(state => state.calendar);
-  const { data: { totalStars } = {} } = useFetchCalendarQuery({ year });
+  const { data: { totalStars } = {} } = api.useFetchCalendarQuery({ year });
 
   return <S.StarCount>{ totalStars || '' }</S.StarCount>;
 };
@@ -103,14 +103,24 @@ const StarCount = () => {
 const RefetchButton = () => {
   const { year } = useAppSelector(state => state.calendar);
   const { status: solverStatus, day } = useAppSelector(state => state.solver);
-  const [updateStars] = useUpdateCalendarMutation();
-  const [updatePuzzle] = useUpdatePuzzleMutation();
+
+  const { data: calendar } = api.useFetchCalendarQuery({ year });
+  const { data: puzzle } = api.useFetchPuzzleQuery({ year, day });
+  const [createCalendar] = api.useCreateCalendarMutation();
+  const [updateCalendar] = api.useUpdateCalendarMutation();
+  const [createPuzzle] = api.useCreatePuzzleMutation();
+  const [updatePuzzle] = api.useUpdatePuzzleMutation();
 
   const toFetch = solverStatus === 'closed' ? 'stars' : solverStatus === 'opened' && 'puzzle';
 
   const handleClick = () => {
-    solverStatus === 'closed' && window.confirm('Fetch latest star counts?') && updateStars({ year });
-    solverStatus === 'opened' && window.confirm('Fetch latest puzzle updates?') && updatePuzzle({ year, day });
+    solverStatus === 'closed' &&
+      window.confirm('Fetch latest star counts?') &&
+      (calendar?.days?.length ? updateCalendar({ year }) : createCalendar({ year }));
+
+    solverStatus === 'opened' &&
+      window.confirm('Fetch latest puzzle updates?') &&
+      (puzzle?.main ? updatePuzzle({ year, day }) : createPuzzle({ year, day }));
   };
 
   return (

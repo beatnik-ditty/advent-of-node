@@ -63,16 +63,18 @@ const SingleGrid: FC<{ year: number }> = ({ year, ...restProps }) => (
 const Cell = ({ year, day }: CalendarDay) => {
   const dispatch = useAppDispatch();
   const { data: calendar, isLoading } = useFetchCalendarQuery({ year });
-  const [createPage, { isUninitialized }] = useCreateCalendarMutation({ fixedCacheKey: `calendar${year}` });
+  const [createCalendar, { isUninitialized }] = useCreateCalendarMutation({ fixedCacheKey: `calendar${year}` });
 
   useEffect(
     function createPageIfAbsent() {
-      if (day === 1 && !calendar && !isLoading && isUninitialized) createPage({ year });
+      if (day === 1 && !isLoading && !calendar?.days?.length && isUninitialized) {
+        createCalendar({ year });
+      }
     },
-    [calendar, year, day, isLoading, createPage, isUninitialized],
+    [calendar, year, day, isLoading, createCalendar, isUninitialized],
   );
 
-  const { stars, title } = calendar?.days[day - 1] ?? {};
+  const { stars, title } = calendar?.days?.[day - 1] ?? {};
 
   const handleClick = () => {
     !isLoading && dispatch(openSolver(day));

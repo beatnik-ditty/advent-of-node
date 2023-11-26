@@ -4,36 +4,32 @@ import fetch, { Response } from 'node-fetch';
 import { hasDateOccured } from '@aon/util-date';
 import { parsePuzzle, parseStarCounts } from '@aon/util-parse-html';
 
-type FetchFn = () => Promise<Response>;
+type FetchFn = () => Promise<unknown>;
 
 const { NX_AOC_URL, NX_AOC_SESSION } = process.env;
 
 export const fetchStarCounts = (year: number | never) =>
   typeof year !== 'number' || !hasDateOccured({ year, day: 1 })
     ? Promise.reject(Error('invalid date'))
-    : throttledFetch(`/${year}`)
-        .then(response => response.text())
-        .then(html => parseStarCounts(html).map(stars => ({ stars })));
+    : throttledFetch(`/${year}`, res => res.text().then(html => parseStarCounts(html).map(stars => ({ stars }))));
 
 export const fetchMainPuzzle = (year: number | never, day: number | never) =>
   typeof year !== 'number' || typeof day !== 'number' || !hasDateOccured({ year, day })
     ? Promise.reject(Error('invalid date'))
-    : throttledFetch(`/${year}/day/${day}`)
-        .then(response => response.text())
-        .then(html => parsePuzzle(html, { year, day }));
+    : throttledFetch(`/${year}/day/${day}`, res => res.text().then(html => parsePuzzle(html, { year, day })));
 
 export const fetchInput = (year: number | never, day: number | never) =>
   typeof year !== 'number' || typeof day !== 'number' || !hasDateOccured({ year, day })
     ? Promise.reject(Error('invalid date'))
-    : throttledFetch(`/${year}/day/${day}/input`).then(response => response.text());
+    : throttledFetch(`/${year}/day/${day}/input`, res => res.text());
 
 const throttledFns: { [uri: string]: FetchFn } = {};
 
-const throttledFetch = (uri: string) => {
+const throttledFetch = <T>(uri: string, processResponse: (res: Response) => Promise<T>) => {
   if (!throttledFns[uri]) {
-    throttledFns[uri] = throttle(() => aocFetch(uri), 60000, { leading: true });
+    throttledFns[uri] = throttle(() => aocFetch(uri).then(processResponse), 60000, { leading: true });
   }
-  return throttledFns[uri]();
+  return throttledFns[uri]() as Promise<T>;
 };
 
 const aocFetch = async (url: string | URL = '') => {
