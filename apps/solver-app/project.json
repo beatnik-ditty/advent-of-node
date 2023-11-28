@@ -1,9 +1,8 @@
 {
-  "name": "express-app",
+  "name": "solver-app",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/express-app/src",
+  "sourceRoot": "apps/solver-app/src",
   "projectType": "application",
-  "implicitDependencies": ["solver"],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -12,12 +11,12 @@
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/apps/express-app",
-        "main": "apps/express-app/src/main.ts",
-        "tsConfig": "apps/express-app/tsconfig.app.json",
-        "assets": ["apps/express-app/src/assets"],
+        "outputPath": "dist/apps/solver-app",
+        "main": "apps/solver-app/src/main.ts",
+        "tsConfig": "apps/solver-app/tsconfig.app.json",
+        "assets": ["apps/solver-app/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/express-app/webpack.config.js"
+        "webpackConfig": "apps/solver-app/webpack.config.js"
       },
       "configurations": {
         "development": {},
@@ -28,14 +27,14 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "express-app:build"
+        "buildTarget": "solver-app:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "express-app:build:development"
+          "buildTarget": "solver-app:build:development"
         },
         "production": {
-          "buildTarget": "express-app:build:production"
+          "buildTarget": "solver-app:build:production"
         }
       }
     },
@@ -43,14 +42,14 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/express-app/**/*.ts"]
+        "lintFilePatterns": ["apps/solver-app/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/express-app/jest.config.ts",
+        "jestConfig": "apps/solver-app/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -61,5 +60,5 @@
       }
     }
   },
-  "tags": ["scope:express"]
+  "tags": []
 }

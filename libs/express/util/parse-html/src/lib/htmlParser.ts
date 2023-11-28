@@ -3,7 +3,7 @@ import { parseDocument } from 'htmlparser2';
 
 import { CalendarDay, PuzzleNode, elementTags } from '@aon/util-types';
 
-const { NX_AOC_URL } = process.env;
+const { NX_AOC_URL = 'https://adventofcode.com' } = process.env;
 
 const getElements = ({ children }: ParentNode, filter: (element: Element) => boolean): Element[] => {
   return children.flatMap(child => {

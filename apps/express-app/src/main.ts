@@ -10,10 +10,11 @@ const app = express();
 app.use(cors());
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-const url = process.env.URL || 'http://localhost';
-const port = process.env.PORT || 3333;
+const host = process.env.HOST ?? 'localhost';
+const port = process.env.PORT ? Number(process.env.PORT) : 3333;
+
 const server = app.listen(port, () => {
-  console.log(`Listening at ${url}:${port}`);
+  console.log(`Listening at http://${host}:${port}`);
 });
 server.on('error', console.error);
 
