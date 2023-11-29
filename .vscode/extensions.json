@@ -4,7 +4,6 @@
     "esbenp.prettier-vscode",
     "rvest.vs-code-prettier-eslint",
     "firsttris.vscode-jest-runner",
-    "dbaeumer.vscode-eslint",
-    "pkief.material-icon-theme"
+    "dbaeumer.vscode-eslint"
   ]
 }

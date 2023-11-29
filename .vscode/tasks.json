@@ -34,7 +34,7 @@
     {
       "label": "Nx: serve express-app",
       "type": "shell",
-      "command": "yarn nx run express-app:serve:production"
+      "command": "yarn nx run express-app:serve"
     },
     {
       "label": "Nx: build react-app",
@@ -49,12 +49,12 @@
     {
       "label": "Nx: serve express-app:develop",
       "type": "shell",
-      "command": "yarn nx run express-app:serve"
+      "command": "yarn nx run express-app:serve:development"
     },
     {
-      "label": "Nx: run solver-app:serve",
+      "label": "Nx: serve solver-app",
       "type": "shell",
-      "command": "yarn nx run solver-app:serve"
+      "command": "yarn nx run solver-app:serve --port=19229"
     }
   ]
 }

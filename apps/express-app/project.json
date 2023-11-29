@@ -3,7 +3,6 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/express-app/src",
   "projectType": "application",
-  "implicitDependencies": ["solver"],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -26,7 +25,7 @@
     },
     "serve": {
       "executor": "@nx/js:node",
-      "defaultConfiguration": "development",
+      "defaultConfiguration": "production",
       "options": {
         "buildTarget": "express-app:build"
       },

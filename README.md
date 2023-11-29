@@ -6,11 +6,13 @@ A full-stack dev environment to solve [Advent of Code](https://adventofcode.com)
 
 ## About
 
-Advent of Node is a full webapp stack bundled in an [Nx monorepo](https://nx.dev/) workspace. The repo includes two apps: the backend `express-app` and frontend `react-app` along with their required libraries.
+Advent of Node is a full webapp stack bundled in an [Nx monorepo](https://nx.dev/) workspace. The repo includes three apps: `solver-app`,`react-app`, `express-app`.
 
-`express-app` is a Node Express server intended as a solution space for a single developer. The server also fetches a puzzle's input and description for the user's account from the Advent of Code website, then stores the data in a personal Atlas MongoDB cloud instance to avoid hammering the AoC site. `express-app` should only ever be hosted locally or in a private environment.
+[`react-app`](apps/react-app/) is a React webapp intended to be built once and served automatically from `express-app`. The user can open a puzzle to read its description and test their solution using either their puzzle input or a custom input entered on the right side of the UI. Custom inputs can be added, saved, modified, renamed, etc., and are also stored in Mongo alongside the user's provided puzzle input.
 
-`react-app` is a React webapp intended to be built once and served automatically from Express. The user can open a puzzle to read its description and test their solution using either their puzzle input or a custom input entered on the right side of the UI. Custom inputs can be added, saved, modified, renamed, etc., and are also stored in Mongo alongside the user's provided puzzle input.
+[`express-app`](apps/express-app/) is a Node Express API that statically serves the `react-app` build, fetches data from the AoC website, handles the MongoDB connection, and dispatches solution requests to `solver-app`. Since `express-app` handles your AoC account data, it is only configured to be hosted locally or in a private environment.
+
+[`solver-app`](apps/solver-app/) is a separate, minimal Node Express application intended as the solution space. It is kept decoupled from `express-app` to avoid the time sink of rebuilding the full app and recreating the mongo connection on every solution update. By default, starting `express-app` will spawn an instance of `solver-app` that supports debugging and auto reloading.
 
 <img src="https://i.imgur.com/ap7gRkX.png"/>
 
@@ -40,13 +42,17 @@ Clone or download the repository, then navigate to the project directory and ins
 yarn
 ```
 
+This will install Nx along with all the project's dependencies listed in [package.json](package.json) into the `node_modules` directory. In general, you will need to rerun the `yarn` command after any dependency updates to make sure all dependencies are installed and the correct version.
+
 I recommend installing the Nx console extension if it's available in your IDE. In VS Code, you should get a popup asking you to install it along with other recommended extensions.
 
 ### Environment
 
-Prior to running the project, you will need to set some environment variables. There is an example file at _apps/express-app/.env.example_ to get you started. You will need to add a _.env_ file at the same level and copy the variables from the _.env.example_.
+Prior to running the project, you will need to set some environment variables. There is an _.env.example_ file in [`express-app`](apps/express-app/) to get you started. You will need to add a _.env_ file at the same level and copy two variables from the _.env.example_.
 
-`NX_AOC_SESSION`: This session ID is how you get your own account's data from the AoC website. AoC allows you to sign in using your account with another service that supports [OAuth](https://en.wikipedia.org/wiki/OAuth), but doesn't offer its own OAuth endpoint (which is probably [a good thing](https://medium.com/@ibm_ptc_security/oauth-2-0-security-and-vulnerabilities-86e64c22b03d)). As a result, this is basically the only way for your Advent of Node instance to access account-specific data (like your puzzle input).
+#### `NX_AOC_SESSION`:
+
+This session ID is how you get your own account's data from the AoC website. AoC allows you to sign in using your account with another service that supports [OAuth](https://en.wikipedia.org/wiki/OAuth), but doesn't offer its own OAuth endpoint (which is probably [a good thing](https://medium.com/@ibm_ptc_security/oauth-2-0-security-and-vulnerabilities-86e64c22b03d)). As a result, this is basically the only way for your Advent of Node instance to access account-specific data (like your puzzle input).
 
 1. Sign in to https://adventofcode.com
 2. Open the browser's dev console with F12 and navigate to the "Network" tab.
@@ -54,7 +60,9 @@ Prior to running the project, you will need to set some environment variables. T
 4. Under "Cookies", copy the "session" value. This should be a long string representing the hexadecimal value of your sessionId.
 5. Paste the string into `NX_AOC_SESSION` field.
 
-`NX_MONGO_URL`: This serves as the location of and authentication for your MongoDB instance. You can host your own database locally if you'd like, or create a free account on [Atlas: Mongodb's cloud platform](https://www.mongodb.com/products/platform/cloud). The free tier stores up to 500MB, so this solution should be valid for the next couple of centuries.
+#### `NX_MONGO_URL`:
+
+This serves as the location of and authentication for your MongoDB instance. You can host your own database locally if you'd like, or create a free account on [Atlas: Mongodb's cloud platform](https://www.mongodb.com/products/platform/cloud). The free tier stores up to 500MB, so this solution should be valid for the next couple of centuries.
 
 Once you've created your account, follow the [setup instructions](https://www.mongodb.com/docs/atlas/getting-started/) for the Atlas UI to create your own database and set up a database user account Advent of Node can use. From your DB's overview screen, select Connect > Drivers, select Node.js and copy the URL. It should look like:
 
@@ -68,6 +76,28 @@ Paste the URL into the `NX_MONGO_URL` variable, making sure to include the passw
 mongodb+srv://<user>:<password>@<url>/adventOfNode?retryWrites=true&w=majority
 ```
 
+### Optional environment variables
+
+There are a few more environment variables commented out in the example file. These shouldn't be set unless running a non-standard configuration.
+
+#### `NX_SOLVER_URL`:
+
+By default, `express-app` spawns a [Node child process](https://nodejs.org/api/child_process.html) that runs `solver-app` locally using Nx's `serve` configuration.
+
+If you instead want to run `solver-app` as a completely separate process, setting `NX_SOLVER_URL` disables the above behavior and tells the app which endpoint to request solutions from.
+
+#### `NX_SOLVER_PORT`:
+
+Set this if you have configured `solver-app` to listen to API requests on a port besides the default 3000.
+
+#### `NX_SOLVER_DEBUG_PORT`:
+
+This is used to tell the child process which port to allow `solver-app` debugging on. This defaults to 19229 to match the [launch.json](.vscode/launch.json) configuration, change this if you need the automated process to debug on a different port.
+
+#### `NX_AOC_URL`:
+
+This defaults to "https://adventofcode.com" and should usually not be set unless testing some specific `express-app` changes.
+
 ## Usage
 
 ### Nx Console
@@ -76,12 +106,14 @@ To build and run Advent of Node, open the Nx Console extension and navigate to t
 
 ```
 react-app > build > production
-express-app > serve > development
+express-app > serve > production
 ```
 
-The first step generates the static files for `react-app`. `express-app` will then serve them at the default base url of _http://localhost:3333_
+The first step generates the static files for `react-app`. `express-app` will then serve them at the default base url of _http://localhost:3333_ and automatically start the `solver-app` instance.
 
-Alternatively, I've set up some build and run tasks in the tasks.json for use in this project. Look there for some guidelines on setting keybindings.
+After `react-app` has been built once, you should only need to run the `express-app:serve` task.
+
+Alternatively, I've set up some build and run tasks in the [tasks.json](.vscode/tasks.json) for use in this project. Look there for some guidelines on setting keybindings.
 
 ### Running tasks from the command line
 
@@ -133,7 +165,9 @@ This project was originally intended for my personal use to solve AoC puzzles, s
 
 For the same reason, I won't accept additions to the `solver` or `solver-helpers` libraries that include any solution code. I maintain my own solutions and helpers in my private repo and encourage anybody using Advent of Node to do the same.
 
-If you would like to develop on `react-app` or one of its library dependencies, I recommend running the `react-app > serve > develop` Nx target. You will first need to configure the `VITE_EXPRESS_SERVER_URL` environment variable in _apps/react-app/.env_ to point to your Express server url. Once you've served the app (default address _http://localhost:4200_), you can take advantage of Vite's live rebuilds and reloads, as well as the "React" VS Code debug configuration for Edge. Debugging in other browsers is possible with some additional setup.
+To develop on `express-app` or `react-app` or any of their libraries, I recommend running their `serve:development` tasks (`express-app` defaults to the 'production' configuration).
+
+Before developing on `react-app`,you will first need to configure the `VITE_EXPRESS_SERVER_URL` environment variable in the [`react-app`](apps/react-app) _.env_ to point to your Express server url. Once you've served the app (default address _http://localhost:4200_), you can take advantage of Vite's live rebuilds and reloads, as well as the "React" VS Code debug configuration for Edge. Debugging in other browsers is possible with some additional setup.
 
 ## License
 

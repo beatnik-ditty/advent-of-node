@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/solver-app/src",
   "projectType": "application",
+  "implicitDependencies": ["solver"],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -34,7 +35,8 @@
           "buildTarget": "solver-app:build:development"
         },
         "production": {
-          "buildTarget": "solver-app:build:production"
+          "buildTarget": "solver-app:build:production",
+          "watch": false
         }
       }
     },

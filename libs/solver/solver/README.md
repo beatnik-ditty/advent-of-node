@@ -14,7 +14,7 @@ To generate JavaScript stubs instead of TypeScript, add the `--js` flag.
 
 ## Solving Puzzles
 
-You will need to build `react-app` and launch `express-app` following the documentation in the root README. I recommend running the `express-app:serve` development target since it automatically rebuilds on save and allows debugging.
+You will need to build `react-app` and launch `express-app` following the documentation in the root README. The `express-app:serve` target is preconfigured to run in production mode and spin up a development instance of `solver-app` as a [Node child process](https://nodejs.org/api/child_process.html). The child also shares its Node process's standard I/O with the parent process in the same terminal (if you know which puzzle necessitated _that_ little addition, you get a cookie).
 
 Find the stub for the solution you want to start work on and start coding. The stub imports your input, which part to run (1 or 2), and an 'output()' function that you can call anywhere in the file to halt execution and return an answer.
 
@@ -32,6 +32,6 @@ As you're developing a solution, you can specify custom inputs in the client usi
 
 ### Visual Studio Code
 
-If you're developing in VS Code, you can run the included Express debug config from the Run and Debug pane (or hit F5). You will have access to the debug log and any breakpoints you set.
+If you're developing in VS Code, you can run the included 'solver' debug config from the Run and Debug pane (or hit F5). You will have access to the debug log and any breakpoints you set.
 
 You can also automatically format your source files according to the project's Prettier and Eslint configurations whenever you save by opening settings and enabling "Editor: Format on Save".
