@@ -14,7 +14,7 @@ const host = process.env.HOST ?? 'localhost';
 const port = process.env.PORT ? Number(process.env.PORT) : 3333;
 
 const server = app.listen(port, () => {
-  console.log(`Listening at http://${host}:${port}`);
+  console.log(`Express app listening at http://${host}:${port}`);
 });
 server.on('error', console.error);
 

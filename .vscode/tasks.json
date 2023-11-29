@@ -9,56 +9,52 @@
   {
     "key": "ctrl+numpad1",
     "command": "workbench.action.tasks.runTask",
-    "args": "Nx: run react-app serve",
+    "args": "Nx: serve express-app",
     "when": "config.workspaceKeybindings.adventOfNode.enabled"
   },
   {
-    "key": "ctrl+numpad2",
+    "key": "ctrl+numpad4",
     "command": "workbench.action.tasks.runTask",
-    "args": "Nx: run express-app serve",
+    "args": "Nx: build react-app",
     "when": "config.workspaceKeybindings.adventOfNode.enabled"
   },
   {
-    "key": "ctrl+numpad3",
+    "key": "ctrl+numpad4",
     "command": "workbench.action.tasks.runTask",
-    "args": "Nx: run-many serve",
+    "args": "Nx: serve express-app:develop",
+    "when": "config.workspaceKeybindings.adventOfNode.enabled"
+  },
+  {
+    "key": "ctrl+numpad5",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Nx: serve react-app",
     "when": "config.workspaceKeybindings.adventOfNode.enabled"
   }
   */ "tasks": [
     {
-      "label": "Nx: run react-app serve",
+      "label": "Nx: serve express-app",
       "type": "shell",
-      "command": "yarn nx run react-app:serve"
+      "command": "yarn nx run express-app:serve:production"
     },
     {
-      "label": "Nx: run express-app serve",
-      "type": "shell",
-      "command": "yarn nx run express-app:serve"
-    },
-    {
-      "label": "Nx: run-many serve",
-      "type": "shell",
-      "command": "yarn nx run-many --target=serve"
-    },
-    {
-      "label": "Nx: run react-app build",
+      "label": "Nx: build react-app",
       "type": "shell",
       "command": "yarn nx run react-app:build"
     },
     {
-      "label": "Nx: run express-app build",
+      "label": "Nx: serve react-app",
       "type": "shell",
-      "command": "yarn nx run express-app:build"
+      "command": "yarn nx run react-app:serve"
     },
     {
-      "label": "Nx: run-many build",
+      "label": "Nx: serve express-app:develop",
       "type": "shell",
-      "command": "yarn nx run-many --target=build --projects=express-app,react-app"
+      "command": "yarn nx run express-app:serve"
     },
     {
-      "label": "Nx: run react-app preview",
+      "label": "Nx: run solver-app:serve",
       "type": "shell",
-      "command": "yarn nx run react-app:preview:production"
+      "command": "yarn nx run solver-app:serve"
     }
   ]
 }

@@ -5,7 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Express",
+      "name": "solver",
+      "port": 19229,
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "restart": true
+    },
+    {
+      "name": "express",
       "port": 9229,
       "request": "attach",
       "skipFiles": ["<node_internals>/**"],
@@ -13,9 +21,9 @@
       "restart": true
     },
     {
+      "name": "react",
       "type": "msedge",
       "request": "launch",
-      "name": "React",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}/apps/react-app/",
       "pathMapping": { "@fs/": "/" },
