@@ -11,7 +11,7 @@ const { NX_AOC_URL, NX_AOC_SESSION } = process.env;
 export const fetchStarCounts = (year: number | never) =>
   typeof year !== 'number' || !hasDateOccured({ year, day: 1 })
     ? Promise.reject(Error('invalid date'))
-    : throttledFetch(`/${year}`, res => res.text().then(html => parseStarCounts(html).map(stars => ({ stars }))));
+    : throttledFetch(`/${year}`, res => (res.text() as Promise<string>).then(html => parseStarCounts(html).map(stars => ({ stars }))));
 
 export const fetchMainPuzzle = (year: number | never, day: number | never) =>
   typeof year !== 'number' || typeof day !== 'number' || !hasDateOccured({ year, day })
