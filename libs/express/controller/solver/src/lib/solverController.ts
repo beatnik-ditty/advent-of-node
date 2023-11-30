@@ -1,60 +1,45 @@
+import { spawn } from 'child_process';
 import { Request, Response } from 'express';
-import { hrtime, stderr, stdin, stdout } from 'process';
-import { Worker } from 'worker_threads';
+import fetch from 'node-fetch';
+import { stderr, stdin, stdout } from 'process';
 
 import { InputModel } from '@aon/util-types';
 
-let currentWorker: Worker;
+const { NX_SOLVER_URL, NX_SOLVER_PORT = 3000, NX_SOLVER_DEBUG_PORT = 19229 } = process.env;
+const baseUrl = `${NX_SOLVER_URL || 'http://localhost'}:${NX_SOLVER_PORT}`;
+const solveUrl = new URL('/solve', baseUrl);
+const cancelUrl = new URL('/cancel', baseUrl);
 
-stdin.on('data', data => {
-  currentWorker?.stdin.write(data);
-});
+if (!NX_SOLVER_URL) {
+  // If the solver URL was manually set, presumably it's being run elsewhere and we don't want to spawn it as a child process.
+
+  const solver = spawn('yarn', ['nx', 'run', 'solver-app:serve:develop', `--port=${NX_SOLVER_DEBUG_PORT}`]);
+
+  stdin.on('data', data => solver.stdin.write(data));
+  solver.stdout.on('data', data => stdout.write(data));
+  solver.stderr.on('data', data => stderr.write(data));
+}
 
 export const postSolution = async (req: Request, res: Response) => {
-  try {
-    const { id, part } = req.body;
+  const { id, part } = req.body;
 
-    if (id) {
-      const { year, day, input } = await InputModel.findById(id).select(['year', 'day', 'input']).exec();
-      await currentWorker?.terminate();
-
-      let received: { result?: string; start?: bigint; end?: bigint } = {};
-
-      const worker = new Worker(new URL('@aon/solver', import.meta.url), {
-        stdin: true,
-        stdout: true,
-        stderr: true,
-        workerData: { year, day, part, input },
-      });
-      worker.stdout.on('data', data => {
-        stdout.write(data);
-      });
-      worker.stderr.on('data', data => {
-        stderr.write(data);
-      });
-
-      worker.on('message', message => {
-        received = { ...received, ...message };
-      });
-      worker.on('exit', code => {
-        const { result, start, end } = received;
-        if (code === 0) {
-          res.status(201).json({ result: result ?? 'Solution runner exited with no solution', time: timeElapsed(start, end) });
-        } else {
-          res.status(201).json({ result: `Solution runner canceled`, time: timeElapsed(start, end) });
-        }
-      });
-      currentWorker = worker;
-    } else {
-      await currentWorker?.terminate();
-      res.sendStatus(200);
-    }
-  } catch (err) {
-    res.status(400).json({ message: err.message, time: 0 });
+  if (id && part) {
+    InputModel.findById(id)
+      .select(['year', 'day', 'input'])
+      .exec()
+      .then(({ year, day, input }) =>
+        fetch(solveUrl, {
+          method: 'POST',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ year, day, input, part }),
+        }),
+      )
+      .then(response => response.json())
+      .then(result => res.status(201).json(result))
+      .catch(err => res.status(500).json({ message: err.message }));
+  } else {
+    fetch(cancelUrl, { method: 'POST' })
+      .then(response => res.sendStatus(response.status))
+      .catch(err => res.status(500).json({ message: err.message }));
   }
-};
-
-const timeElapsed = (start?: bigint, end?: bigint) => {
-  const time = hrtime.bigint();
-  return Number(((end ?? time) - (start ?? time)) / 1000n);
 };

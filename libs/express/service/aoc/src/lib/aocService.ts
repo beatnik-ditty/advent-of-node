@@ -6,7 +6,7 @@ import { parsePuzzle, parseStarCounts } from '@aon/util-parse-html';
 
 type FetchFn = () => Promise<unknown>;
 
-const { NX_AOC_URL, NX_AOC_SESSION } = process.env;
+const { NX_AOC_URL = 'https://adventofcode.com', NX_AOC_SESSION } = process.env;
 
 export const fetchStarCounts = (year: number | never) =>
   typeof year !== 'number' || !hasDateOccured({ year, day: 1 })

@@ -27,7 +27,7 @@
               },
               {
                 "sourceTag": "scope:express",
-                "onlyDependOnLibsWithTags": ["scope:shared", "scope:express", "scope:solver"]
+                "onlyDependOnLibsWithTags": ["scope:shared", "scope:express"]
               },
               {
                 "sourceTag": "scope:solver",
@@ -47,7 +47,7 @@
               },
               {
                 "sourceTag": "type:controller",
-                "onlyDependOnLibsWithTags": ["type:service", "type:util", "scope:solver"]
+                "onlyDependOnLibsWithTags": ["type:service", "type:util"]
               },
               {
                 "sourceTag": "type:service",
