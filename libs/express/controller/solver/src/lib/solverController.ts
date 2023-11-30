@@ -7,8 +7,8 @@ import { InputModel } from '@aon/util-types';
 
 const { NX_SOLVER_URL, NX_SOLVER_PORT = 3000, NX_SOLVER_DEBUG_PORT = 19229 } = process.env;
 const baseUrl = `${NX_SOLVER_URL || 'http://localhost'}:${NX_SOLVER_PORT}`;
-const solveUrl = new URL('/solve', baseUrl);
-const cancelUrl = new URL('/cancel', baseUrl);
+const solveUrl = new URL('/api/solve', baseUrl);
+const cancelUrl = new URL('/api/cancel', baseUrl);
 
 if (!NX_SOLVER_URL) {
   // If the solver URL was manually set, presumably it's being run elsewhere and we don't want to spawn it as a child process.
