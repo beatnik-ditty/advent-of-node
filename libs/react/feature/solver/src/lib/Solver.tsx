@@ -7,7 +7,6 @@ import * as redux from '@aon/data-access-solver';
 import { useAppDispatch, useAppSelector } from '@aon/data-access-store';
 import { TitleDiv } from '@aon/ui-animations';
 import { Anchor, Banner } from '@aon/ui-components';
-import { getPresentDate } from '@aon/util-date';
 import { PuzzleElementNode, PuzzleNode } from '@aon/util-types';
 import * as S from './Solver.styled';
 
@@ -31,10 +30,10 @@ export const Solver: FC = props => {
 
 const SolverContainer: FC<{ incoming?: boolean }> = ({ incoming, ...restProps }) => {
   const { year } = useAppSelector(state => state.calendar);
-  const { day: presentDay, newDay, status } = useAppSelector(state => state.solver);
+  const { day: prevDay, newDay, status } = useAppSelector(state => state.solver);
 
-  const day = incoming ? newDay : presentDay;
-  const direction = presentDay < newDay ? 'left' : 'right';
+  const day = incoming ? newDay : prevDay;
+  const direction = prevDay < newDay ? 'left' : 'right';
   const { data } = api.useFetchCalendarQuery({ year });
   const { stars, title: puzzleTitle } = data?.days?.[day - 1] ?? {};
 
@@ -87,10 +86,8 @@ const SolverBody = ({ day }: { day: number }) => {
   );
 };
 
-const { day: presentDay, year: presentYear } = getPresentDate();
-
 const NavMenu = ({ day }: { day: number }) => {
-  const { year } = useAppSelector(state => state.calendar);
+  const { year, presentYear, presentDay } = useAppSelector(state => state.calendar);
   const dispatch = useAppDispatch();
   const highestDay = year === presentYear ? presentDay : 25;
   const aocLink = `${VITE_AOC_URL || 'https://adventofcode.com'}/${year}/day/${day}`;

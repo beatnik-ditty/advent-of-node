@@ -1,11 +1,11 @@
-import { FC, PropsWithChildren, useEffect } from 'react';
+import { FC, PropsWithChildren, useEffect, useState } from 'react';
 
 import { useCreateCalendarMutation, useFetchCalendarQuery } from '@aon/data-access-api';
-import { endYearChange, startYearChange } from '@aon/data-access-calendar';
+import { endYearChange, startYearChange, updatePresentDate } from '@aon/data-access-calendar';
 import { openSolver } from '@aon/data-access-solver';
 import { useAppDispatch, useAppSelector } from '@aon/data-access-store';
 import { Banner } from '@aon/ui-components';
-import { getFirstYear, getPresentDate } from '@aon/util-date';
+import { getFirstYear, getPresentDate, timeUntilMidnight } from '@aon/util-date';
 import { CalendarDay } from '@aon/util-types';
 import * as S from './Calendar.styled';
 
@@ -62,6 +62,7 @@ const SingleGrid: FC<{ year: number }> = ({ year, ...restProps }) => (
 
 const Cell = ({ year, day }: CalendarDay) => {
   const dispatch = useAppDispatch();
+  const { presentYear, presentDay } = useAppSelector(state => state.calendar);
   const { data: calendar, isLoading } = useFetchCalendarQuery({ year });
   const [createCalendar, { isUninitialized }] = useCreateCalendarMutation({ fixedCacheKey: `calendar${year}` });
 
@@ -81,20 +82,47 @@ const Cell = ({ year, day }: CalendarDay) => {
   };
 
   const isDisabled = year === presentYear && day > presentDay;
+  const hasCountdown = year === presentYear && day === presentDay + 1;
 
   return (
     <S.Cell customLayout onClick={ handleClick } disabled={ isDisabled }>
       <Banner { ...{ day, stars } } />
-      { title ? <S.CellTitle>{ title }</S.CellTitle> : null }
+      { hasCountdown ? <Countdown /> : title ? <S.CellTitle>{ title }</S.CellTitle> : null }
     </S.Cell>
   );
 };
 
-const firstYear = getFirstYear();
-const { day: presentDay, year: presentYear } = getPresentDate();
+const Countdown = () => {
+  const [time, setTime] = useState('');
+  const { presentDay } = useAppSelector(state => state.calendar);
+  const dispatch = useAppDispatch();
+
+  useEffect(
+    function trackTime() {
+      const tick = () => {
+        const { h, m, s, ms } = timeUntilMidnight();
+        if (h >= 0) {
+          setTime(`${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? 0 : ''}${s}`);
+          timeout = setTimeout(() => tick(), ms);
+        } else {
+          const { day } = getPresentDate();
+          presentDay !== day && dispatch(updatePresentDate());
+          timeout = setTimeout(() => tick(), 60 * 1000);
+        }
+      };
+      let timeout: ReturnType<typeof setTimeout>;
+      tick();
+
+      return () => clearTimeout(timeout);
+    },
+    [dispatch, presentDay],
+  );
+
+  return <S.CellTitle>{ time }</S.CellTitle>;
+};
 
 const navLabels = ['<<', '<', '>', '>>'];
-const navYears = [() => firstYear, (year: number) => year - 1, (year: number) => year + 1, () => getPresentDate().year];
+const navYears = [() => getFirstYear(), (year: number) => year - 1, (year: number) => year + 1, () => getPresentDate().year];
 const YearNav = () => {
   return (
     <S.Nav>
@@ -108,7 +136,7 @@ const YearNav = () => {
 };
 
 const NavButton: FC<{ index: number } & PropsWithChildren> = ({ index, ...restProps }) => {
-  const { year } = useAppSelector(state => state.calendar);
+  const { year, presentYear } = useAppSelector(state => state.calendar);
   const { status: solverStatus } = useAppSelector(state => state.solver);
   const dispatch = useAppDispatch();
 

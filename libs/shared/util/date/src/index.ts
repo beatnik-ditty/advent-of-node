@@ -1,1 +1,1 @@
-export { getFirstYear, getPresentDate, hasDateOccured } from './lib/date';
+export * from './lib/date';
