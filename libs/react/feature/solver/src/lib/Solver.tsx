@@ -101,6 +101,10 @@ const NavMenu = ({ day }: { day: number }) => {
         <span>{ `//` }</span>
         <S.StarSpan>*</S.StarSpan>
       </S.ExternalButton>
+      <S.ExternalButton onClick={ () => window.open(`${aocLink}#part2`) } tooltip={ 'Part 2' }>
+        <span>{ `//` }</span>
+        <S.StarSpan>**</S.StarSpan>
+      </S.ExternalButton>
       <S.NavButton onClick={ () => dispatch(redux.chooseDay(day + 1)) } disabled={ day >= highestDay }>
         { '>' }
       </S.NavButton>

@@ -50,7 +50,7 @@ export const Menu = styled.div({
 
 export const NavMenu = styled(Menu)({
   paddingLeft: '5em',
-  gridTemplate: '1fr / repeat(4, 1fr)',
+  gridTemplate: '1fr / 2fr 1fr 1fr 2fr 2fr',
 });
 
 export const MainMenu = styled(Menu)({
