@@ -261,8 +261,7 @@ const PuzzlePane = ({ day }: { day: number }) => {
         puzzleStars != null &&
         puzzleTitle != null &&
         (stars !== puzzleStars || title !== puzzleTitle) &&
-        updateStatus !== QueryStatus.pending &&
-        updateStatus !== QueryStatus.rejected
+        updateStatus !== QueryStatus.pending
       ) {
         update({ year, day, ...(stars !== puzzleStars && { stars }), ...(title !== puzzleTitle && { title }) });
       }
