@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/react-app/src",
   "projectType": "application",
+  "tags": ["scope:react"],
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
@@ -50,7 +51,8 @@
         "production": {
           "buildTarget": "react-app:build:production"
         }
-      }
+      },
+      "dependsOn": ["build"]
     },
     "test": {
       "executor": "@nx/vite:test",
@@ -61,11 +63,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/react-app/**/*.{ts,tsx,js,jsx}"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "serve-static": {
       "executor": "@nx/web:file-server",
@@ -73,6 +71,5 @@
         "buildTarget": "react-app:build"
       }
     }
-  },
-  "tags": ["scope:react"]
+  }
 }

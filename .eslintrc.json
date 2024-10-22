@@ -96,13 +96,23 @@
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nx/typescript"],
       "rules": {
-        "@typescript-eslint/no-unused-vars": ["warn", { "ignoreRestSiblings": true }]
+        "@typescript-eslint/no-unused-vars": [
+          "warn",
+          {
+            "ignoreRestSiblings": true
+          }
+        ],
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
       }
     },
     {
       "files": ["*.js", "*.jsx"],
       "extends": ["plugin:@nx/javascript"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
+      }
     },
     {
       "files": ["*.jsx", "*.tsx"],

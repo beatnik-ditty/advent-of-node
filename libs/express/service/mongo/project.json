@@ -3,6 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/express/service/mongo/src",
   "projectType": "library",
+  "tags": ["scope:express", "type:service"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
@@ -16,26 +17,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/express/service/mongo/**/*.ts", "libs/express/service/mongo/package.json"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/express/service/mongo/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "libs/express/service/mongo/jest.config.ts"
       }
     }
-  },
-  "tags": ["scope:express", "type:service"]
+  }
 }
