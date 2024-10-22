@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "plugins/solver/src",
   "projectType": "library",
+  "tags": ["scope:solver", "type:plugin"],
   "implicitDependencies": ["solver"],
   "targets": {
     "build": {
@@ -38,26 +39,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["plugins/solver/**/*.ts", "plugins/solver/package.json", "plugins/solver/generators.json"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "plugins/solver/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "plugins/solver/jest.config.ts"
       }
     }
-  },
-  "tags": ["scope:solver", "type:plugin"]
+  }
 }
