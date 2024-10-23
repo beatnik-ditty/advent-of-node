@@ -16,7 +16,6 @@
         "main": "apps/express-app/src/main.ts",
         "tsConfig": "apps/express-app/tsconfig.app.json",
         "assets": ["apps/express-app/src/assets"],
-        "isolatedConfig": true,
         "webpackConfig": "apps/express-app/webpack.config.js"
       },
       "configurations": {

@@ -17,7 +17,6 @@
         "main": "apps/solver-app/src/main.ts",
         "tsConfig": "apps/solver-app/tsconfig.app.json",
         "assets": ["apps/solver-app/src/assets"],
-        "isolatedConfig": true,
         "webpackConfig": "apps/solver-app/webpack.config.js"
       },
       "configurations": {
