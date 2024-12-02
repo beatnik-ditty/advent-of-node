@@ -2,7 +2,7 @@
 
 A full-stack dev environment to solve [Advent of Code](https://adventofcode.com) challenges in TypeScript or JavaScript.
 
-<img src="https://img.shields.io/badge/yarn-v1.22.19-blue" /> <img src="https://img.shields.io/badge/Nx-v17.0.3-blue" /> <img src="https://img.shields.io/badge/React-v18.2.0-blue" /> <img src="https://img.shields.io/badge/Express-v4.18.1-blue" /> <img src="https://img.shields.io/badge/license-BSD--3-green" />
+<img src="https://img.shields.io/badge/yarn-v1.22.19-blue" /> <img src="https://img.shields.io/badge/Nx-v20.0.3-blue" /> <img src="https://img.shields.io/badge/React-v18.3.1-blue" /> <img src="https://img.shields.io/badge/Express-v4.18.1-blue" /> <img src="https://img.shields.io/badge/license-BSD--3-green" />
 
 ## About
 
