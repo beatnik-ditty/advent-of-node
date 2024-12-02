@@ -12,7 +12,7 @@ export const Calendar = styled.div(({ solverStatus }: { solverStatus: string }) 
 
 export const Grid = styled(SlidingDiv)({
   display: 'grid',
-  gridTemplate: 'repeat(5, 1fr) / repeat(5, 20%)',
+  gridTemplate: 'repeat(5, 1fr) / repeat(5, 1fr)',
   gap: '1px',
   gridRow: 1,
   gridColumn: 1,
