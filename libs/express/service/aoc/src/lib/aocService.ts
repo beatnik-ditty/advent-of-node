@@ -9,19 +9,19 @@ type FetchFn = () => Promise<unknown>;
 const { NX_AOC_URL = 'https://adventofcode.com', NX_AOC_SESSION } = process.env;
 
 export const fetchStarCounts = (year: number | never) =>
-  typeof year !== 'number' || !hasDateOccured({ year, day: 1 })
-    ? Promise.reject(Error('invalid date'))
-    : throttledFetch(`/${year}`, res => res.text().then(html => parseStarCounts(html).map(stars => ({ stars }))));
+  typeof year !== 'number' || !hasDateOccured({ year, day: 1 }) ?
+    Promise.reject(Error('invalid date'))
+  : throttledFetch(`/${year}`, res => res.text().then(html => parseStarCounts(html).map(stars => ({ stars }))));
 
 export const fetchMainPuzzle = (year: number | never, day: number | never) =>
-  typeof year !== 'number' || typeof day !== 'number' || !hasDateOccured({ year, day })
-    ? Promise.reject(Error('invalid date'))
-    : throttledFetch(`/${year}/day/${day}`, res => res.text().then(html => parsePuzzle(html, { year, day })));
+  typeof year !== 'number' || typeof day !== 'number' || !hasDateOccured({ year, day }) ?
+    Promise.reject(Error('invalid date'))
+  : throttledFetch(`/${year}/day/${day}`, res => res.text().then(html => parsePuzzle(html, { year, day })));
 
 export const fetchInput = (year: number | never, day: number | never) =>
-  typeof year !== 'number' || typeof day !== 'number' || !hasDateOccured({ year, day })
-    ? Promise.reject(Error('invalid date'))
-    : throttledFetch(`/${year}/day/${day}/input`, res => res.text());
+  typeof year !== 'number' || typeof day !== 'number' || !hasDateOccured({ year, day }) ?
+    Promise.reject(Error('invalid date'))
+  : throttledFetch(`/${year}/day/${day}/input`, res => res.text());
 
 const throttledFns: { [uri: string]: FetchFn } = {};
 
