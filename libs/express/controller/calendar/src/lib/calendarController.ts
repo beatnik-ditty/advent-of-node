@@ -38,16 +38,14 @@ export const patchCalendar = async (req: Request, res: Response) => {
       { year },
       {
         $set:
-          day == null
-            ? await fetchStarCounts(year).then(days =>
-                days
-                  .map(({ stars }, index) => ({ [`days.${index}.stars`]: stars }))
-                  .reduce((prev, current) => ({ ...prev, ...current }), {}),
-              )
-            : {
-                ...(typeof stars === 'number' && { [`days.${day - 1}.stars`]: stars }),
-                ...(title && { [`days.${day - 1}.title`]: title }),
-              },
+          day == null ?
+            await fetchStarCounts(year).then(days =>
+              days.map(({ stars }, index) => ({ [`days.${index}.stars`]: stars })).reduce((prev, current) => ({ ...prev, ...current }), {}),
+            )
+          : {
+              ...(typeof stars === 'number' && { [`days.${day - 1}.stars`]: stars }),
+              ...(title && { [`days.${day - 1}.title`]: title }),
+            },
       },
     );
     res.sendStatus(200);

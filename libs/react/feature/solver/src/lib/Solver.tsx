@@ -20,12 +20,12 @@ export const Solver: FC = props => {
 
   const onAnimationEnd = () => dispatch(redux.endAnimation());
 
-  return status !== 'closed' ? (
-    <S.SolverWindow { ...props }>
-      <SolverContainer key={ day } />
-      <SolverContainer key={ day === newDay ? 0 : newDay } incoming { ...{ onAnimationEnd } } />
-    </S.SolverWindow>
-  ) : null;
+  return status !== 'closed' ?
+      <S.SolverWindow { ...props }>
+        <SolverContainer key={ day } />
+        <SolverContainer key={ day === newDay ? 0 : newDay } incoming { ...{ onAnimationEnd } } />
+      </S.SolverWindow>
+    : null;
 };
 
 const SolverContainer: FC<{ incoming?: boolean }> = ({ incoming, ...restProps }) => {
@@ -37,12 +37,12 @@ const SolverContainer: FC<{ incoming?: boolean }> = ({ incoming, ...restProps })
   const { data } = api.useFetchCalendarQuery({ year });
   const { stars, title: puzzleTitle } = data?.days?.[day - 1] ?? {};
 
-  return incoming && status !== 'sliding' ? null : (
-    <S.SolverContainer { ...{ ...(status === 'sliding' && { direction, transition: incoming ? 'in' : 'out' }), ...restProps } }>
-      <BannerContainer day={ day } stars={ stars } puzzleTitle={ puzzleTitle }></BannerContainer>
-      <SolverPane day={ day } />
-    </S.SolverContainer>
-  );
+  return incoming && status !== 'sliding' ?
+      null
+    : <S.SolverContainer { ...{ ...(status === 'sliding' && { direction, transition: incoming ? 'in' : 'out' }), ...restProps } }>
+        <BannerContainer day={ day } stars={ stars } puzzleTitle={ puzzleTitle }></BannerContainer>
+        <SolverPane day={ day } />
+      </S.SolverContainer>;
 };
 
 const openAnimation = (status: redux.Status) => ({
@@ -58,7 +58,9 @@ const BannerContainer = ({ day, stars, puzzleTitle }: { day: number; stars?: num
   return (
     <S.BannerContainer { ...{ day, ...openAnimation(status), onAnimationEnd } }>
       <Banner { ...{ day, stars } } />
-      { puzzleTitle && transition ? <TitleDiv { ...{ transition } }>{ `    ${puzzleTitle}    ` }</TitleDiv> : null }
+      { puzzleTitle && transition ?
+        <TitleDiv { ...{ transition } }>{ `    ${puzzleTitle}    ` }</TitleDiv>
+      : null }
     </S.BannerContainer>
   );
 };
@@ -179,7 +181,7 @@ const MainMenu = ({ day }: { day: number }) => {
         >
           Load
         </S.MenuButton>
-        { menuOpen ? (
+        { menuOpen ?
           <S.DropdownList>
             { savedInputs?.inputs.map(input => (
               <S.DropdownButton
@@ -222,7 +224,7 @@ const MainMenu = ({ day }: { day: number }) => {
               </S.DropdownButton>
             )) }
           </S.DropdownList>
-        ) : null }
+        : null }
       </S.DropdownContainer>
       <S.MenuButton onClick={ close }>Close</S.MenuButton>
     </S.MainMenu>
@@ -250,7 +252,11 @@ const PuzzlePane = ({ day }: { day: number }) => {
 
   const puzzle = data?.main ? data : undefined;
   const classes = puzzle?.main?.attributes['className']?.split(' ') ?? [];
-  const stars = puzzle?.main && (classes.includes('verycomplete') ? 2 : classes.includes('complete') ? 1 : 0);
+  const stars =
+    puzzle?.main &&
+    (classes.includes('verycomplete') ? 2
+    : classes.includes('complete') ? 1
+    : 0);
   const title = puzzle?.main?.attributes['title'];
 
   useEffect(
@@ -272,7 +278,11 @@ const PuzzlePane = ({ day }: { day: number }) => {
 
   return (
     <S.Pane>
-      <S.Content>{ puzzle?.main ? <PuzzleDisplayComponentList nodes={ puzzle.main.childNodes ?? [] } /> : '' }</S.Content>
+      <S.Content>
+        { puzzle?.main ?
+          <PuzzleDisplayComponentList nodes={ puzzle.main.childNodes ?? [] } />
+        : '' }
+      </S.Content>
     </S.Pane>
   );
 };
@@ -340,7 +350,7 @@ const InputBody = ({ day }: { day: number }) => {
   const { part, inputs, isCustomInput } = useAppSelector(state => state.solver);
 
   const { data } = api.useFetchInputQuery({ year, day, custom: false });
-  const id = isCustomInput ? inputs[day].id : data?.inputs?.[0]?.id ?? '';
+  const id = isCustomInput ? inputs[day].id : (data?.inputs?.[0]?.id ?? '');
   const [, { data: solution, error }] = api.useCreateSolutionMutation({ fixedCacheKey: `solution${id}_${part}` });
 
   const Input = isCustomInput ? CustomInput : PuzzleInput;
@@ -409,13 +419,13 @@ const CustomInput: FC<{ day: number }> = ({ day }) => {
     [handleKeyPress],
   );
 
-  return id ? (
-    <>
-      <TitleInput day={ day } />
-      <TextArea value={ input } placeholder={ 'Enter input' } />
-      <FormattedError error={ fetchError || updateError || createError || deleteError } />
-    </>
-  ) : null;
+  return id ?
+      <>
+        <TitleInput day={ day } />
+        <TextArea value={ input } placeholder={ 'Enter input' } />
+        <FormattedError error={ fetchError || updateError || createError || deleteError } />
+      </>
+    : null;
 };
 
 const PuzzleInput: FC<{ day: number }> = ({ day }) => {
@@ -502,16 +512,15 @@ const TitleInput: FC<{ day: number }> = ({ day }) => {
 
   return (
     <S.H2>
-      { isEditing ? (
+      { isEditing ?
         <S.TitleInput autoFocus ref={ inputRef } onBlur={ finishTitleEdit } onFocus={ resize } onChange={ resize } defaultValue={ title } />
-      ) : (
-        <S.InactiveTitleInput
+      : <S.InactiveTitleInput
           readOnly
           onClick={ handleClick }
           value={ `${displayTitle}${canSave ? '*' : ''}` }
           size={ (displayTitle.length || 1) + (canSave ? 1 : 0) }
         />
-      ) }
+      }
     </S.H2>
   );
 };
@@ -539,8 +548,9 @@ const TextArea: FC<{ value: string; placeholder: string; readOnly?: boolean }> =
     [displayValue, isInputHidden, placeholder],
   );
 
-  const inputProps = readOnly
-    ? {
+  const inputProps =
+    readOnly ?
+      {
         readOnly: true,
         onFocus: () => ref.current?.blur(),
       }
@@ -559,10 +569,10 @@ const TextArea: FC<{ value: string; placeholder: string; readOnly?: boolean }> =
       };
 
   return isInputHidden ? null : (
-    <p>
-      <S.Input ref={ ref } value={ displayValue } spellCheck={ false } { ...{ placeholder, ...inputProps } } />
-    </p>
-  );
+      <p>
+        <S.Input ref={ ref } value={ displayValue } spellCheck={ false } { ...{ placeholder, ...inputProps } } />
+      </p>
+    );
 };
 
 const formatTime = (time: number) => {
@@ -576,32 +586,36 @@ const formatTime = (time: number) => {
 };
 
 const Result = ({ part, result, time }: { part: number; result?: string; time?: number }) =>
-  result != null && time != null ? (
+  result != null && time != null ?
     <>
       <S.ResultHeader>--- Part { part } result ---</S.ResultHeader>
-      <pre>{ result ? <S.Code>{ result }</S.Code> : null }</pre>
+      <pre>
+        { result ?
+          <S.Code>{ result }</S.Code>
+        : null }
+      </pre>
       <p>Ran in { formatTime(time || 0) }</p>
     </>
-  ) : null;
+  : null;
 
 const FormattedError = ({ error }: { error?: FetchBaseQueryError | SerializedError }) =>
   // Because RTK throws a parsing error on a status-only response
-  error && (!('status' in error) || error.status !== 'PARSING_ERROR') ? (
+  error && (!('status' in error) || error.status !== 'PARSING_ERROR') ?
     <S.FormatError>
-      { 'status' in error
-        ? typeof error.status === 'string'
-          ? `${error.status}: ${error.error}`
-          : `FetchBaseQueryError ${error.status}`
-        : `${error.name || 'SerializedError'}${error.message ? `: ${error.message}` : ''}` }
+      { 'status' in error ?
+        typeof error.status === 'string' ?
+          `${error.status}: ${error.error}`
+        : `FetchBaseQueryError ${error.status}`
+      : `${error.name || 'SerializedError'}${error.message ? `: ${error.message}` : ''}` }
     </S.FormatError>
-  ) : null;
+  : null;
 
 const InputMenu = ({ day }: { day: number }) => {
   const { year } = useAppSelector(state => state.calendar);
   const { part, inputs, isCustomInput, hideCustomInput, hidePuzzleInput, canSave } = useAppSelector(state => state.solver);
 
   const { data: puzzleInput } = api.useFetchInputQuery({ year, day, custom: false });
-  const id = isCustomInput ? inputs[day].id : puzzleInput?.inputs?.[0]?.id ?? '';
+  const id = isCustomInput ? inputs[day].id : (puzzleInput?.inputs?.[0]?.id ?? '');
 
   const [createSolution, { isLoading }] = api.useCreateSolutionMutation({ fixedCacheKey: `solution${id}_${part}` });
   const [updateInput] = api.useUpdateInputMutation({ fixedCacheKey: `updateInput${id}` });
@@ -641,16 +655,20 @@ const InputMenu = ({ day }: { day: number }) => {
         Use { isCustomInput ? 'Puzzle' : 'Custom' } Input
       </S.MenuButton>
       <S.MenuButton onClick={ () => dispatch(redux.toggleSetting('hideInput')) }>
-        { (isCustomInput ? hideCustomInput : hidePuzzleInput) ? 'Show' : 'Hide' } Input
+        { (
+          isCustomInput ? hideCustomInput : hidePuzzleInput
+        ) ?
+          'Show'
+        : 'Hide' }{ ' ' }
+        Input
       </S.MenuButton>
       <S.MenuButton onClick={ () => dispatch(redux.toggleSetting('part')) }>Part { part }</S.MenuButton>
-      { cancel ? (
+      { cancel ?
         <S.MenuButton onClick={ cancelSolution }>Cancel</S.MenuButton>
-      ) : (
-        <S.MenuButton onClick={ handleRunClick } disabled={ !id || isLoading }>
+      : <S.MenuButton onClick={ handleRunClick } disabled={ !id || isLoading }>
           Run
         </S.MenuButton>
-      ) }
+      }
     </S.Menu>
   );
 };

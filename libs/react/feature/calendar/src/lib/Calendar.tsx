@@ -14,12 +14,12 @@ type CalendarProps = { year: number; previousYear: number };
 export const Calendar: FC = props => {
   const { status: solverStatus } = useAppSelector(state => state.solver);
 
-  return /^(?:closing|opening|closed)$/.test(solverStatus) ? (
-    <S.Calendar { ...{ solverStatus, ...props } }>
-      <GridDisplay />
-      <YearNav />
-    </S.Calendar>
-  ) : null;
+  return /^(?:closing|opening|closed)$/.test(solverStatus) ?
+      <S.Calendar { ...{ solverStatus, ...props } }>
+        <GridDisplay />
+        <YearNav />
+      </S.Calendar>
+    : null;
 };
 
 const GridDisplay = () => {
@@ -87,7 +87,11 @@ const Cell = ({ year, day }: CalendarDay) => {
   return (
     <S.Cell customLayout onClick={ handleClick } disabled={ isDisabled }>
       <Banner { ...{ day, stars } } />
-      { hasCountdown ? <Countdown /> : title ? <S.CellTitle>{ title }</S.CellTitle> : null }
+      { hasCountdown ?
+        <Countdown />
+      : title ?
+        <S.CellTitle>{ title }</S.CellTitle>
+      : null }
     </S.Cell>
   );
 };

@@ -81,13 +81,13 @@ export const DropdownButton = styled(MenuButton)(({ disabled }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  ...(disabled
-    ? { pointerEvents: 'auto', '$:active': { outline: 0 } }
-    : {
-        '&:active': {
-          transform: '',
-        },
-      }),
+  ...(disabled ?
+    { pointerEvents: 'auto', '$:active': { outline: 0 } }
+  : {
+      '&:active': {
+        transform: '',
+      },
+    }),
 }));
 
 export const DropdownOptionSpan = styled.span({

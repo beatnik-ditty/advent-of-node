@@ -24,10 +24,9 @@ export const parseStarCounts = (html: string) => {
     const matches = dayPattern.exec(element.attribs['class']);
     if (matches) {
       const day = parseInt(matches[1]);
-      starCounts[day - 1] = element.attribs['class']?.split(' ').includes('calendar-verycomplete')
-        ? 2
-        : element.attribs['class']?.split(' ').includes('calendar-complete')
-        ? 1
+      starCounts[day - 1] =
+        element.attribs['class']?.split(' ').includes('calendar-verycomplete') ? 2
+        : element.attribs['class']?.split(' ').includes('calendar-complete') ? 1
         : 0;
     }
   }
@@ -54,7 +53,12 @@ export const parsePuzzle = (html: string, { year, day }: CalendarDay) => {
       childNodes: parseChildNodes(childNodes),
       attributes: parseAttribs(attribs),
     };
-    addClassName(main.attributes, stars === 2 ? 'verycomplete' : stars === 1 ? 'complete' : 'incomplete');
+    addClassName(
+      main.attributes,
+      stars === 2 ? 'verycomplete'
+      : stars === 1 ? 'complete'
+      : 'incomplete',
+    );
     main.attributes['title'] = puzzleTitle;
     return main;
   };

@@ -15,10 +15,18 @@ export const SlidingDiv = styled.div(({ transition, direction }: Animation) => (
       pointerEvents: 'none',
       animation: `${keyframes({
         from: {
-          transform: `translateX(${transition === 'out' ? 0 : direction === 'right' ? -DISTANCE_PERCENT : DISTANCE_PERCENT}%)`,
+          transform: `translateX(${
+            transition === 'out' ? 0
+            : direction === 'right' ? -DISTANCE_PERCENT
+            : DISTANCE_PERCENT
+          }%)`,
         },
         to: {
-          transform: `translateX(${transition === 'in' ? 0 : direction === 'right' ? DISTANCE_PERCENT : -DISTANCE_PERCENT}%)`,
+          transform: `translateX(${
+            transition === 'in' ? 0
+            : direction === 'right' ? DISTANCE_PERCENT
+            : -DISTANCE_PERCENT
+          }%)`,
         },
       })} ${TIME_MS}ms ease-${transition === 'in' ? 'out' : 'in'}`,
     }),
