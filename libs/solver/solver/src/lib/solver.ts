@@ -4,15 +4,16 @@ import { parentPort, workerData } from 'worker_threads';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as _ from '@aon/solver-helpers';
 
-export const { input, part }: { input: string; part: 1 | 2 } = workerData;
+const { year, day, input, part }: { year: number; day: number; input: string; part: 1 | 2 } = workerData;
 
-parentPort.postMessage({ start: hrtime.bigint() });
-
-export const output = (result: unknown) => {
+const output = (result: unknown) => {
   parentPort.postMessage({ result: `${result}`, end: hrtime.bigint() });
   exit();
 };
-const { year, day } = workerData;
+
+export { input, output, part };
+
+parentPort.postMessage({ start: hrtime.bigint() });
 
 try {
   await require(`./${year}/Day${day < 10 ? '0' : ''}${day}`);
