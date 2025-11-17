@@ -2,51 +2,60 @@ import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 
 const TIME_MS = 800;
-const ROWS = 5;
-const COLUMNS = 5;
 const PERCENT_SCALE_Y = 94;
-
-const WIDTH = 100 / COLUMNS;
-const HEIGHT = PERCENT_SCALE_Y / ROWS;
 const BOTTOM_GAP = 100 - PERCENT_SCALE_Y;
-const SQUARES_TO_LEFT = (COLUMNS - 1) / 2;
-const SQUARES_ABOVE = (ROWS - 1) / 2;
 
 type Animation = {
   transition?: 'opening' | 'closing';
   day?: number;
+  year?: number;
 };
 
-const resizeTransform = ({ day = 0 }: Animation) => ({
-  height: `${HEIGHT}%`,
-  width: `${WIDTH}%`,
-  left: `${WIDTH * ((day - 1) % COLUMNS)}%`,
-  top: `${HEIGHT * Math.floor((day - 1) / ROWS)}%`,
-});
+const gridParams = (year: number) => {
+  const [rows, cols] = year < 2025 ? [5, 5] : [3, 4];
+  const height = PERCENT_SCALE_Y / rows;
+  const width = 100 / cols;
+  const squaresAbove = (rows - 1) / 2;
+  const squaresToLeft = (cols - 1) / 2;
+  return { cols, height, width, squaresAbove, squaresToLeft };
+};
 
-export const ResizeDiv = styled.div(({ transition, day }: Animation) => ({
+const resizeTransform = ({ day = 0, year = 2015 }: Animation) => {
+  const { cols, height, width } = gridParams(year);
+  return {
+    height: `${height}%`,
+    width: `${width}%`,
+    left: `${width * ((day - 1) % cols)}%`,
+    top: `${height * Math.floor((day - 1) / cols)}%`,
+  };
+};
+
+export const ResizeDiv = styled.div(({ transition, day, year }: Animation) => ({
   ...(transition &&
     day && {
       animation: `${keyframes({
-        from: { ...(transition === 'opening' && resizeTransform({ day })) },
-        to: { ...(transition === 'closing' && resizeTransform({ day })) },
+        from: { ...(transition === 'opening' && resizeTransform({ day, year })) },
+        to: { ...(transition === 'closing' && resizeTransform({ day, year })) },
       })} ${TIME_MS}ms ease-in-out`,
     }),
 }));
 
-const scaleTransform = ({ day = 0 }: Animation) => ({
-  transform: `translate(${WIDTH * (((day - 1) % COLUMNS) - SQUARES_TO_LEFT)}%, ${
-    HEIGHT * Math.floor((day - 1) / ROWS - SQUARES_ABOVE) - BOTTOM_GAP / 2
-  }%) scale(${WIDTH}%, ${HEIGHT}%)`,
-  backgroundColor: '#020230',
-});
+const scaleTransform = ({ day = 0, year = 2015 }: Animation) => {
+  const { cols, height, width, squaresAbove, squaresToLeft } = gridParams(year);
+  return {
+    transform: `translate(${width * (((day - 1) % cols) - squaresToLeft)}%, ${
+      height * Math.floor((day - 1) / cols - squaresAbove) - BOTTOM_GAP / 2
+    }%) scale(${width}%, ${height}%)`,
+    backgroundColor: '#020230',
+  };
+};
 
-export const ScaleDiv = styled.div(({ transition, day }: Animation) => ({
+export const ScaleDiv = styled.div(({ transition, day, year }: Animation) => ({
   ...(transition &&
     day && {
       animation: `${keyframes({
-        from: { ...(transition === 'opening' && scaleTransform({ day })) },
-        to: { ...(transition === 'closing' && scaleTransform({ day })) },
+        from: { ...(transition === 'opening' && scaleTransform({ day, year })) },
+        to: { ...(transition === 'closing' && scaleTransform({ day, year })) },
       })} ${TIME_MS}ms ease-in-out`,
     }),
 }));

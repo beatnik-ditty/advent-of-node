@@ -19,7 +19,7 @@ const getElements = ({ children }: ParentNode, filter: (element: Element) => boo
 export const parseStarCounts = (html: string) => {
   const dayPattern = /calendar-day(\d\d?)/;
   const anchors = getElements(parseDocument(html), ({ attribs }) => dayPattern.test(attribs['class']));
-  const starCounts = Array<number>(25);
+  const starCounts = Array<number>(anchors.length);
   for (const element of anchors) {
     const matches = dayPattern.exec(element.attribs['class']);
     if (matches) {

@@ -40,8 +40,8 @@ const SolverContainer: FC<{ incoming?: boolean }> = ({ incoming, ...restProps })
   return incoming && status !== 'sliding' ?
       null
     : <S.SolverContainer { ...{ ...(status === 'sliding' && { direction, transition: incoming ? 'in' : 'out' }), ...restProps } }>
-        <BannerContainer day={ day } stars={ stars } puzzleTitle={ puzzleTitle }></BannerContainer>
-        <SolverPane day={ day } />
+        <BannerContainer year={ year } day={ day } stars={ stars } puzzleTitle={ puzzleTitle }></BannerContainer>
+        <SolverPane year={ year } day={ day } />
       </S.SolverContainer>;
 };
 
@@ -49,14 +49,14 @@ const openAnimation = (status: redux.Status) => ({
   ...((status === 'opening' || status === 'closing') && { transition: status }),
 });
 
-const BannerContainer = ({ day, stars, puzzleTitle }: { day: number; stars?: number; puzzleTitle?: string | null }) => {
+const BannerContainer = ({ year, day, stars, puzzleTitle }: { year: number; day: number; stars?: number; puzzleTitle?: string | null }) => {
   const { status } = useAppSelector(state => state.solver);
   const dispatch = useAppDispatch();
 
   const onAnimationEnd = () => dispatch(redux.endAnimation());
   const transition = openAnimation(status).transition;
   return (
-    <S.BannerContainer { ...{ day, ...openAnimation(status), onAnimationEnd } }>
+    <S.BannerContainer { ...{ year, day, ...openAnimation(status), onAnimationEnd } }>
       <Banner { ...{ day, stars } } />
       { puzzleTitle && transition ?
         <TitleDiv { ...{ transition } }>{ `    ${puzzleTitle}    ` }</TitleDiv>
@@ -65,7 +65,7 @@ const BannerContainer = ({ day, stars, puzzleTitle }: { day: number; stars?: num
   );
 };
 
-const SolverPane: FC<{ day: number }> = props => {
+const SolverPane: FC<{ year: number; day: number }> = props => {
   const { status } = useAppSelector(state => state.solver);
   return (
     <S.SolverPane { ...{ ...openAnimation(status), ...props } }>
