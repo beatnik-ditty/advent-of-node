@@ -22,7 +22,7 @@ export const postCalendar = async (req: Request, res: Response) => {
   try {
     const { year } = req.body;
 
-    const days = await fetchStarCounts(year).catch(() => [...Array(25)].map(() => ({ stars: 0 })));
+    const days = await fetchStarCounts(year).catch(() => [...Array(year < 2025 ? 25 : 12)].map(() => ({ stars: 0 })));
     const newCalendar = await CalendarModel.create({ year, days });
     res.status(201).json(newCalendar);
   } catch (err) {

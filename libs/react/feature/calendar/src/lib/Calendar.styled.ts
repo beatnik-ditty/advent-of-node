@@ -10,13 +10,13 @@ export const Calendar = styled.div(({ solverStatus }: { solverStatus: string }) 
   ...(solverStatus !== 'closed' && { pointerEvents: 'none' }),
 }));
 
-export const Grid = styled(SlidingDiv)({
+export const Grid = styled(SlidingDiv)(({ year }: { year: number }) => ({
   display: 'grid',
-  gridTemplate: 'repeat(5, 1fr) / repeat(5, 1fr)',
+  gridTemplate: year < 2025 ? 'repeat(5, 1fr) / repeat(5, 1fr)' : 'repeat(3, 1fr) / repeat(4, 1fr)',
   gap: '1px',
   gridRow: 1,
   gridColumn: 1,
-});
+}));
 
 export const Cell = styled(Button)({
   display: 'flex',

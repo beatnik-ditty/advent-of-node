@@ -12,14 +12,15 @@ export const getPresentDate = (): CalendarDay => {
     .format(new Date())
     .split(/\/|,.*$/gi)
     .map(Number);
+  const dayCount = year < 2025 ? 25 : 12;
 
   switch (month) {
     case 12:
-      return { year, day: Math.min(day, 25) };
+      return { year, day: Math.min(day, dayCount) };
     case 11:
       return { year, day: day - 30 };
     default:
-      return { year: year - 1, day: 25 };
+      return { year: year - 1, day: dayCount };
   }
 };
 

@@ -52,10 +52,10 @@ const AnimatedGrids = ({ year, previousYear }: CalendarProps) => {
   );
 };
 
-const SingleGrid: FC<{ year: number }> = ({ year, ...restProps }) => (
-  <S.Grid { ...restProps }>
-    { [...Array(25)].map((_, day) => {
-      return <Cell key={ day } year={ year } day={ day + 1 } />;
+const SingleGrid: FC<{ year: number }> = props => (
+  <S.Grid { ...props }>
+    { [...Array(props.year < 2025 ? 25 : 12)].map((_, day) => {
+      return <Cell key={ day } year={ props.year } day={ day + 1 } />;
     }) }
   </S.Grid>
 );
